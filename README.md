@@ -1,4 +1,4 @@
-# 横浜市 救急需要の未来地図 2025→2035（v2）
+# 横浜市 救急需要の未来地図 2025→2035（v3）
 
 公開: https://ajp-4dev.github.io/yokohama-ems-2035/ （GitHub Pages・公開リポ AJP-4dev/yokohama-ems-2035）
 Artifact版: https://claude.ai/artifact/Q5u7dTpGuNHD7BEVfKN5pa
@@ -21,6 +21,15 @@ Artifact版: https://claude.ai/artifact/Q5u7dTpGuNHD7BEVfKN5pa
 
 再生成: `.venv/bin/python src/build_model.py && .venv/bin/python src/build_html.py`
 （venv: `python3 -m venv .venv && .venv/bin/pip install openpyxl pymupdf pypdf`）
+
+## v3 で変わったこと（2026-10-05・デザイン刷新）
+- ライトテーマ（紺×救急レッド、Zen Kaku Gothic New＋Manrope）。5ページ構成＝地図／市全体／考察／方法／スライド（スマホは下部タブ、PCは上部タブ）
+- 初回に「このサイトの見方」ガイド（localStorageで1回だけ・?ボタンで再表示）、各ページ末尾に「次へ」導線
+- 3D操作: ズーム±・視点リセット・自動回転ON/OFF・「区を選ぶ」一覧・PCはホバー強調・←→/+−/Escキー
+- 指標ごとの1行説明（高さ＝件数、色＝指標）と凡例、縦画面では地図をコントロールの下に配置
+- 方法ページ: 5ステップの図解SVG＋搬送率バー＋「実例：◯◯区の2035年」（地図で選んだ区に連動）
+- スライドページ: 11枚（結論3点・現在地・推移・年齢別・85+・2D区別マップ・昼間人口・方法・示唆・出典）、←→/スワイプ/ドット
+- 旧テンプレは src/template_v2_backup.html
 
 ## v2 で変わったこと（2026-10-05）
 - 区別人口の将来値を**市の行政区別推計（中位）の5歳階級別変化率**に置換（簡易コーホート比例法を廃止）
