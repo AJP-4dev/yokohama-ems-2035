@@ -188,7 +188,9 @@ city = {y: {g: sum(wd['pop'][y][g] for wd in wards) for g in GROUPS} for y in YE
 for y in YEARS: city[y]['t'] = sum(city[y][g] for g in GROUPS)
 city_off = {y: dict(P['city'][str(y)] if str(y) in P['city'] else P['city'][y]) for y in YEARS}
 
+TREND = json.load(open(HERE / 'hist' / 'trend.json')) if (HERE / 'hist' / 'trend.json').exists() else None
 model = {
+    'trend': TREND,
     'years': YEARS, 'wards': wards, 'city': city, 'cityOfficial': city_off,
     'rates': {g: round(v, 5) for g, v in rate_group.items()},
     'rates5y': {a: round(v, 5) for a, v in RATE.items()},
@@ -209,7 +211,10 @@ for wd in wards:
 DATA = {'wards': dw, 'rates': model['rates'], 'dispRatio': model['dispRatio'], 'dayf': DAYF,
         'city': {str(y): v for y, v in city.items()}, 'series': B['series'], 'emsUnits': EMS_UNITS,
         'hourly': HOURLY, 'dayShare': round(DAY_SHARE, 4), 'dayHours': [8, 19], 'nonTransport': NON_TRANSPORT, 'typeKeys': TYPE_KEYS,
-        'cityArrive': round(sum(r[2]*r[4] for r in UNIT_ROWS)/sum(r[2] for r in UNIT_ROWS),2), 'cityNonTr': round(1-TRANSPORT_TOTAL/DISPATCH_TOTAL,4)}
+        'cityArrive': round(sum(r[2]*r[4] for r in UNIT_ROWS)/sum(r[2] for r in UNIT_ROWS),2), 'cityNonTr': round(1-TRANSPORT_TOTAL/DISPATCH_TOTAL,4),
+        'trend': TREND and {'years': TREND['years'], 'rateGroup': TREND['rateGroup'], 'stdRate': TREND['stdRate'], 'allRate': TREND['allRate'],
+                            'growthGroup': TREND['growthGroup'], 'growthStd': TREND['growthStd'], 'growthAll': TREND['growthAll'],
+                            'growthPre': TREND['growthGroupPre2019'], 'growthPost': TREND['growthGroup2022_24'], 'fitYears': TREND['fitYears']}}
 open(HERE.parent / 'data.js', 'w').write('const DATA=' + json.dumps(DATA, ensure_ascii=False, separators=(',', ':')) + ';\n')
 
 # ---- サマリー -----------------------------------------------------------------
