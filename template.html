@@ -232,7 +232,7 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
     <button id="reset" aria-label="視点をリセット"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
     <button id="spin" aria-label="自動回転" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="6"/></svg></button>
   </div>
-  <div id="legend"><div id="legT">件/年</div><div class="bar2" id="legBar"></div><div class="lab"><span id="legLo"></span><span id="legHi"></span></div><div class="h" id="legH">高さ＝出場件数</div></div>
+  <div id="legend"><div id="legT">件/年</div><div class="bar2" id="legBar"></div><div class="lab"><span id="legLo"></span><span id="legHi"></span></div><div class="h" id="legH">高さも同じ指標</div></div>
   <button id="pickBtn">区を選ぶ</button>
   <div id="picker"></div>
   <div id="sheet" role="dialog" aria-label="区の詳細">
@@ -410,7 +410,7 @@ const ramp=(stops,t)=>{t=Math.max(0,Math.min(1,t));const n=stops.length-1;const 
 const RAMPS={disp:['#dbe7f3','#7fa6d6','#3a5f99','#14213d'],diff:['#1b998b','#d8dee7','#f4a259','#e63946'],aging:['#cfe8e3','#f4a259','#c0392b'],day:['#1b998b','#d8dee7','#f4a259','#e63946']};
 const RANGE={disp:[7000,23000],diff:[-5,15],aging:[18,38],day:[70,220]};
 const colorFor=v=>{const [lo,hi]=RANGE[state.mode];let t;if(state.mode==='day')t=Math.log(v/lo)/Math.log(hi/lo);else t=(v-lo)/(hi-lo);return ramp(RAMPS[state.mode],t)};
-const heightFor=w=>0.4+(dispOf(w,state.year)/23000)*7;
+const heightFor=w=>{const v=metric(w);let t;if(state.mode==='disp')t=v/23000;else if(state.mode==='diff')t=Math.max(0,Math.min(1.3,(v+5)/20));else if(state.mode==='aging')t=(v-15)/23;else t=Math.log(v/70)/Math.log(3.2);return 0.4+t*7};
 const metric=w=>{const y=state.year;switch(state.mode){case 'disp':return dispOf(w,y);case 'diff':return (dispOf(w,y)/w.disp24-1)*100;case 'aging':return agingRate(w,y);case 'day':return w.dn}};
 
 /* ---------- THREE ---------- */
@@ -418,8 +418,9 @@ const stage=document.getElementById('stage');
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(innerWidth,innerHeight); renderer.setClearColor(0xf4f6f9,1);
 stage.appendChild(renderer.domElement);
-const scene=new THREE.Scene(); scene.fog=new THREE.Fog(0xf4f6f9,70,140);
-const cam=new THREE.PerspectiveCamera(40,innerWidth/innerHeight,0.1,400);
+const scene=new THREE.Scene(); 
+const cam=new THREE.OrthographicCamera(-1,1,1,-1,0.1,400);
+function setFrustum(){const a=innerWidth/innerHeight,sz=dist*0.5;cam.left=-sz*a;cam.right=sz*a;cam.top=sz;cam.bottom=-sz;cam.updateProjectionMatrix()}
 scene.add(new THREE.HemisphereLight(0xffffff,0xc9d3df,1.0));
 const key=new THREE.DirectionalLight(0xffffff,0.75); key.position.set(-20,36,16); scene.add(key);
 const fill=new THREE.DirectionalLight(0xdfe8f5,0.35); fill.position.set(24,12,-18); scene.add(fill);
@@ -445,9 +446,9 @@ function setLabel(spr,text,sub,hot){const c=spr.userData.canvas,s=2,g=c.getConte
 
 /* orbit */
 const portrait=()=>innerWidth/innerHeight<0.8;
-const DEF={theta:-0.35,phi:0.95,dist:(portrait()?66:40)};
+const DEF={theta:-0.35,phi:0.95,dist:(portrait()?52:34)};
 let theta=DEF.theta,phi=DEF.phi,dist=DEF.dist,tx=0,tz=1.5,auto=true;
-const updCam=()=>{cam.position.set(tx+dist*Math.sin(phi)*Math.sin(theta),dist*Math.cos(phi),tz+dist*Math.sin(phi)*Math.cos(theta));cam.lookAt(tx,portrait()?11:3,tz)};
+const updCam=()=>{setFrustum();const D=80;cam.position.set(tx+D*Math.sin(phi)*Math.sin(theta),D*Math.cos(phi),tz+D*Math.sin(phi)*Math.cos(theta));cam.lookAt(tx,portrait()?12:4,tz)};
 const ptr=new Map(); let lastD=0,moved=false,downT=0;
 const el=renderer.domElement;
 el.addEventListener('pointerdown',e=>{ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});moved=false;downT=Date.now();setAuto(false);el.setPointerCapture(e.pointerId)});
@@ -467,7 +468,7 @@ const hitAt=(x,y)=>{v2.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCam
 function pick(x,y){const i=hitAt(x,y);select(i)}
 let hov=null;
 function hover(x,y){const i=hitAt(x,y);if(i===hov)return;hov=i;el.style.cursor=i===null?'grab':'pointer';meshes.forEach(m=>{m.userData.line.material.opacity=(state.sel===m.userData.i)?.95:(hov===m.userData.i?.7:.28)})}
-addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()});
+addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);updCam()});
 addEventListener('keydown',e=>{if(!document.getElementById('page-map').classList.contains('show'))return;if(e.key==='ArrowLeft'){theta+=0.08;setAuto(false);updCam()}if(e.key==='ArrowRight'){theta-=0.08;setAuto(false);updCam()}if(e.key==='+'||e.key==='=')zoom(0.85);if(e.key==='-')zoom(1.18);if(e.key==='Escape')select(null)});
 const zoom=f=>{dist=Math.max(18,Math.min(90,dist*f));setAuto(false);updCam()};
 document.getElementById('zin').onclick=()=>zoom(0.8); document.getElementById('zout').onclick=()=>zoom(1.25);
@@ -476,7 +477,7 @@ const spinBtn=document.getElementById('spin'); spinBtn.onclick=()=>setAuto(!auto
 function setAuto(v){auto=v;spinBtn.setAttribute('aria-pressed',v)}
 
 /* ---------- apply ---------- */
-const HINT={disp:'柱の高さと色＝年間の救急出場件数（件/年）',diff:'色＝2024年実績からの増減率。高さは件数',aging:'色＝65歳以上の割合。高さは出場件数',day:'色＝昼間人口÷夜間人口×100（2020年）。100より大きいと昼に人が集まる区'};
+const HINT={disp:'高さと色＝年間の救急出場件数（件/年）',diff:'高さと色＝2024年実績からの増減率（2024を選ぶと全区が基準で同じ高さ）',aging:'高さと色＝65歳以上の割合',day:'高さと色＝昼間人口÷夜間人口×100（2020年）。100より大きいと昼に人が集まる区'};
 const LEG={disp:['出場件数（件/年）','7,000','23,000'],diff:['2024年比の増減率','−5%','+15%'],aging:['65歳以上の割合','18%','38%'],day:['昼夜間人口比率','70','220']};
 function applyMetric(){
   const y=state.year;
@@ -488,7 +489,7 @@ function applyMetric(){
   if(y==='2025'){d.textContent='2024年実績 ／ 1日 701件';d.className='d num'}else{const dd=(t/cityTotal('2025')-1)*100;d.textContent=`2024年比 ${pct(dd)} ／ 1日 ${fmt(t/365)}件`;d.className='d num '+(dd>=0?'up':'dn')}
   const L=LEG[state.mode];document.getElementById('legT').textContent=L[0];document.getElementById('legLo').textContent=L[1];document.getElementById('legHi').textContent=L[2];
   document.getElementById('legBar').style.background=`linear-gradient(90deg,${RAMPS[state.mode].join(',')})`;
-  document.getElementById('legH').textContent=state.mode==='disp'?'高さ＝出場件数':'高さ＝出場件数（色とは別）';
+  document.getElementById('legH').textContent='高さも同じ指標（平行投影で比較可）';
   document.getElementById('hint').textContent=HINT[state.mode]+(y==='2025'?'':state.sc==='B'?'　／ '+y+'年・利用率上昇込み':'　／ '+y+'年・人口の変化だけ');
   if(state.sel!==null)fillSheet(W[state.sel]);
 }
