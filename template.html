@@ -274,7 +274,7 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
   <div id="stage"></div>
   <div id="ctl">
     <div class="panel">
-      <div class="prow" id="rowMode"><span class="lbl">指標<button class="q" data-q="mode" aria-label="指標の説明">?</button></span><div class="seg" id="modeSeg"><button aria-pressed="true" data-m="disp">出場件数</button><button aria-pressed="false" data-m="pop">人口</button><button aria-pressed="false" data-m="elder">高齢者人口</button><button aria-pressed="false" data-m="aging">高齢化率</button><button aria-pressed="false" data-m="day">昼夜間比</button></div></div>
+      <div class="prow" id="rowMode"><span class="lbl">指標<button class="q" data-q="mode" aria-label="指標の説明">?</button></span><div class="seg" id="modeSeg"><button aria-pressed="true" data-m="disp">出場件数</button><button aria-pressed="false" data-m="percap">1,000人あたり</button><button aria-pressed="false" data-m="density">件/km²</button><button aria-pressed="false" data-m="nontr">不搬送率</button><button aria-pressed="false" data-m="arrive">到着時間</button><button aria-pressed="false" data-m="pop">人口</button><button aria-pressed="false" data-m="elder">高齢者人口</button><button aria-pressed="false" data-m="aging">高齢化率</button><button aria-pressed="false" data-m="day">昼夜間比</button></div></div>
       <div class="prow" id="rowView"><span class="lbl">表示<button class="q" data-q="view" aria-label="表示の説明">?</button></span><div class="seg" id="viewSeg"><button aria-pressed="true" data-v="abs">実数</button><button aria-pressed="false" data-v="diff">2025年比の増減率</button></div><span class="tag">影響なし</span></div>
       <div class="prow" id="rowYear"><span class="lbl">年<button class="q" data-q="year" aria-label="年の説明">?</button></span><div class="yr"><input type="range" id="yearRange" min="2025" max="2040" step="1" value="2025" aria-label="年"><div class="yrv num" id="yearV">2025<small>基準＝2024年実績</small></div><div class="yq" id="yearQuick"><button data-y="2025" aria-pressed="true">2025</button><button data-y="2030" aria-pressed="false">2030</button><button data-y="2035" aria-pressed="false">2035</button><button data-y="2040" aria-pressed="false">2040</button></div></div><span class="tag">影響なし</span></div>
       <div class="prow" id="rowSc"><span class="lbl">前提<button class="q" data-q="sc" aria-label="前提の説明">?</button></span><div class="seg alt" id="scSeg"><button aria-pressed="true" data-s="A">人口のみ</button><button aria-pressed="false" data-s="M">中間</button><button aria-pressed="false" data-s="B">上限</button></div><span class="tag">影響なし</span></div>
@@ -306,7 +306,7 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
     <div class="stack"><div class="t"><span>年齢別の出場件数 2024（実績）</span><span id="st1v" class="num"></span></div><div class="b" id="st1"></div></div>
     <div class="stack"><div class="t"><span id="st2t">同 2035（推計）</span><span id="st2v" class="num"></span></div><div class="b" id="st2"></div></div>
     <div class="lg"><span><b class="c-c"></b>0–14歳</span><span><b class="c-w"></b>15–64歳</span><span><b class="c-e1"></b>65–74歳</span><span><b class="c-e2"></b>75–84歳</span><span><b class="c-e3"></b>85歳以上</span></div>
-    <p class="note" id="shRead"></p><p class="note" id="shUnit"></p>
+    <p class="note" id="shRead"></p><p class="note" id="shUnit"></p><p class="note" id="shOps"></p><div class="stack"><div class="t"><span>出場の内訳 2024（事故種別）</span><span id="st3v" class="num"></span></div><div class="b" id="st3"></div></div><div class="lg"><span><b style="background:#3a7bd5"></b>急病</span><span><b style="background:#9ad0f5"></b>一般負傷</span><span><b style="background:#f4a259"></b>交通事故</span><span><b style="background:#8e3b8f"></b>転院搬送</span><span><b style="background:#c9d2de"></b>その他</span></div>
     <details><summary>人口と昼夜間人口の内訳</summary><p class="note" id="shPop"></p><p class="note" id="shDay"></p></details>
   </div>
 </section>
@@ -321,6 +321,8 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
   <div class="card"><h4>年齢別の搬送率（2024年、人口100人あたり年間搬送人員）</h4><svg class="chart" id="chRate" viewBox="0 0 600 190"></svg><p class="m">85歳以上は4人に1人が1年のうちに救急搬送されます。65–74歳の4倍、15–64歳の9倍です。</p></div>
   <div class="card"><h4>区別の増減率 2025→2035（人口の変化だけ）</h4><div id="rankList"></div><p class="m">18区すべてで増加。北部の比較的若い住宅地（都筑・青葉・港北）は85歳以上が5〜6割増えて件数を押し上げ、南西部の郊外は人口減少（−8〜11%）が高齢化をほぼ相殺します。</p></div>
   <div class="card"><h4>人口は減るのに、出場件数は増える — 区別の増減率 2025→2035</h4><svg class="chart" id="chPair" viewBox="0 0 600 470"></svg><p class="m">緑＝人口の増減率、赤＝出場件数の増減率（人口の変化だけ）。南西部は人口が1割減っても件数は横ばい、北部は人口減でも件数が1割以上増える。 <a class="mapgo" href="#" data-state="m=pop&v=diff&y=2035">人口の増減率を地図で</a> <a class="mapgo" href="#" data-state="m=disp&v=diff&y=2035">出場件数の増減率を地図で</a></p></div>
+  <div class="card"><h4>密度と到着時間 — 疎な区ほど現場が遠い</h4><svg class="chart" id="chScatter" viewBox="0 0 600 360"></svg><p class="m">横軸＝出場密度（件/km²、対数）、縦軸＝現場到着までの平均時間（2024年、区内の救急隊の加重平均）。円の大きさ＝1隊あたりのカバー面積。右下ほど「密で速い」、左上ほど「疎で遅い」。 <a class="mapgo" href="#" data-state="m=density">出場密度を地図で</a> <a class="mapgo" href="#" data-state="m=arrive">到着時間を地図で</a></p></div>
+  <div class="card"><h4>不搬送率 — 出場したが搬送しなかった割合（2024年）</h4><div id="nontrList"></div><p class="m">区内の救急隊の出場件数と搬送人員から算出。市平均19%。不搬送49,676件の理由は、本人の辞退 81%、死亡 8%、途中帰署 4%、傷病者なし 3%、虚誤報 2%。 <a class="mapgo" href="#" data-state="m=nontr">不搬送率を地図で</a> <a class="mapgo" href="#" data-state="m=disp">搬送／不搬送の2段の柱を地図で</a></p></div>
   <div class="card"><h4>救急隊あたりの負担 — 1隊あたり年間出場件数</h4><div id="unitList"></div><p class="m">灰＝2024年実績、色＝2035年（人口の変化だけ）。赤は市の目安3,000件/隊を超える区。隊数は24時間隊＋日勤救急隊（2024年末、消防年報から集計）。隊は区をまたいで出場するため目安です。</p></div>
   <div class="card"><h4>区別 推計一覧</h4><div class="tbl"><table id="tblAll"></table></div><p class="m">隊数＝24時間隊＋日勤救急隊（2024年末、消防年報の救急隊別活動状況から集計）。「3,000超」＝1隊あたり年間出場件数が市平均の目安3,000件を超える最初の年（—は2040年まで超えない）。</p></div>
   <button class="next" data-go="insight">考察を読む<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
@@ -354,12 +356,21 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
   <h3>7. 2040年に向けて</h3>
   <p>市人口は2040年に361万人（2025年比 −4.2%）まで減りますが、出場件数は人口のみで27.9万件（+8.9%）、中間シナリオで31.5万件、上限シナリオで35.4万件に達します。上限の値は「最近15年の傾向が2040年まで複利で続く」仮定で、2040年時点では根拠が薄いことに注意してください。65–74歳が57万人に達し、85歳以上は26.5万人で高止まりします。2035年以降は増加のペースが鈍る一方、高齢化率は32%に上がり、1件あたりの重症度と拘束時間の増加が主題になります。</p>
   <p><a class="mapgo" href="#" data-state="m=disp&y=2040">2040年の出場件数を地図で</a> <a class="mapgo" href="#" data-state="m=aging&y=2040">2040年の高齢化率を地図で</a></p>
-  <h3>8. 施策への示唆</h3>
+  <h3>8. 密度と到着時間 — 疎な区ほど現場が遠い</h3>
+  <p>出場密度は西区1,537件/km²、南区1,228件/km²から、都筑区394件/km²、栄区439件/km²まで4倍の開きがあります。1隊あたりのカバー面積は西区1.4km²に対し、戸塚・青葉・都筑は7km²。現場到着までの平均時間は中区6.4分が最短で、保土ケ谷9.6分・緑9.5分・旭9.4分・戸塚9.2分・泉9.2分が遅く、市平均は8.6分（平均距離2.7km）です。密度が低い区は1件ごとの走行距離が長く、同じ件数でも隊の拘束時間が長くなります。</p>
+  <div class="callout b">南西部（旭・泉・栄・瀬谷）は件数が横ばいでも、高齢化率35%前後と到着9分超が重なる区です。件数ではなく「到着時間」を配置の指標にすると、北部とは別の理由で手当てが要ることが見えます。</div>
+  <p><a class="mapgo" href="#" data-state="m=density">出場密度を地図で</a> <a class="mapgo" href="#" data-state="m=arrive">到着時間を地図で</a> <a class="mapgo" href="#" data-state="m=percap">1,000人あたりを地図で</a></p>
+  <h3>9. 不搬送 — 減らせる需要がどこにあるか</h3>
+  <p>2024年の出場256,481件のうち49,676件（19%）は搬送に至っていません。理由の81%は本人の辞退で、死亡8%、途中帰署4%と続きます。区内の救急隊ベースで見ると、中区の不搬送率は37%と突出し、西区25%、港北・神奈川・南が20〜22%。郊外の泉・栄・戸塚・旭は13〜14%です。中区の校正係数1.69（人口から期待される件数の1.7倍）の相当部分は、繁華街での辞退や軽症など「搬送に至らない出場」で説明できます。</p>
+  <p>不搬送の多い区は、#7119（救急相談）や軽症者対策で出場そのものを減らせる余地が大きい区でもあります。逆に不搬送率が低い郊外区は、出場のほとんどが実際の搬送なので、件数の増加がそのまま病院搬送の負荷になります。</p>
+  <p><a class="mapgo" href="#" data-state="m=nontr">不搬送率を地図で</a> <a class="mapgo" href="#" data-state="m=disp&w=中">中区の搬送／不搬送を地図で</a></p>
+  <h3>10. 施策への示唆</h3>
   <ul>
     <li>北部（都筑・青葉・港北・鶴見）および都心（西・中）への救急隊増強・日勤隊の重点配置。市全体で+7.8%（約2.0万件）の増加は、1隊3,000件を維持するなら約7隊分に相当。</li>
     <li>85歳以上の搬送が増加分の中心。高齢者施設との事前連携（かかりつけ医・ACP・施設内看取り）と #7119 の活用で「搬送が本人の利益にならない出場」を減らす施策が最も費用対効果が高い。</li>
     <li>転院搬送が多い戸塚・港南では、民間患者等搬送事業者への移行で1件あたり拘束時間を短縮する余地がある。</li>
-    <li>南西部（瀬谷・栄・旭・港南・泉）は件数が横ばいでも高齢化率35%前後に達し、重症度・現場滞在時間の増加への備えが課題。</li>
+    <li>南西部（瀬谷・栄・旭・港南・泉）は件数が横ばいでも高齢化率35%前後に達し、到着時間も9分超。重症度・現場滞在時間の増加への備えと、出張所の配置見直しが課題。</li>
+    <li>中・西・港北・神奈川の不搬送率が高い区では、#7119 の周知と繁華街での軽症対応（救急相談・民間搬送）で、出場を1〜2割減らせる可能性がある。</li>
     <li>本推計は市の行政区別将来人口推計（令和5年推計・中位）に基づく。推計の改定時に再計算する。</li>
   </ul>
   <button class="next" data-go="method">計算方法を見る<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
@@ -389,6 +400,9 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
     <li><b>高齢者人口</b>：65歳以上の人数（65–74＋75–84＋85歳以上）。</li>
     <li><b>高齢化率</b>：65歳以上の人数 ÷ 総人口。</li>
     <li><b>昼夜間人口比率</b>：昼間人口 ÷ 夜間人口 × 100（2020年国勢調査、全年共通）。</li>
+    <li><b>1,000人あたり</b>：出場件数 ÷ 区の人口 × 1,000。<b>件/km²</b>：出場件数 ÷ 区の面積（国土地理院 面積調、港湾・水面を含む）。</li>
+    <li><b>不搬送率</b>：1 − 搬送人員 ÷ 出場件数。消防年報の救急隊別活動状況（87隊）を区ごとに合計した2024年実績。隊は区をまたいで出場するため「区内の隊の実績」です。</li>
+    <li><b>到着時間</b>：119番入電から現場到着までの平均（分）。同じ隊別表を出場件数で加重平均。</li>
     <li><b>実数／増減率</b>：増減率は 2025年（基準）に対する変化。出場件数・人口・高齢者人口で使えます。</li>
     <li><b>前提（人口のみ／中間／上限）</b>：出場件数にだけ効きます。搬送率を2024年で固定／年+0.75%で上昇／年+1.5%で上昇。</li>
   </ul>
@@ -409,9 +423,10 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
   <ul class="m">
     <li>横浜市「横浜市の人口 第2部 年齢別人口（令和7年1月1日現在）」— 区別の年齢4区分人口。<a href="https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/kankobutsu/yokohamajinko/r6dotainenrei.files/25_2nenrei.pdf">PDF</a></li>
     <li>横浜市政策局「横浜市将来人口推計（令和5年推計・中位）」— 行政区別・年齢5歳階級別人口（2020〜2070年、各年）。<a href="https://www.city.yokohama.lg.jp/city-info/seisaku/torikumi/shien/jinkosuikei.html">ページ</a>／<a href="https://www.city.yokohama.lg.jp/city-info/seisaku/torikumi/shien/jinkosuikei.files/0048_20240410.xlsx">xlsx</a></li>
-    <li>横浜市消防局「令和6年 消防年報 災害統計」（確定値）— 救急出場件数256,481件、搬送人員207,471人、年齢5歳階級別搬送人員、行政区別出場件数・転院搬送、時間帯別出場件数、救急隊数85.5隊。<a href="https://www.city.yokohama.lg.jp/city-info/yokohamashi/org/shobo/sonota/nenpoh.html">ページ</a>／<a href="https://www.city.yokohama.lg.jp/city-info/yokohamashi/org/shobo/sonota/nenpoh.files/0218_20251007.pdf">PDF</a></li>
+    <li>横浜市消防局「令和6年 消防年報 災害統計」（確定値）— 救急出場件数256,481件、搬送人員207,471人、年齢5歳階級別搬送人員、行政区別出場件数・転院搬送、時間帯別出場件数、救急隊別の出場・搬送・現場到着時間（p.105）、不取扱理由（p.108）、救急隊数85.5隊。<a href="https://www.city.yokohama.lg.jp/city-info/yokohamashi/org/shobo/sonota/nenpoh.html">ページ</a>／<a href="https://www.city.yokohama.lg.jp/city-info/yokohamashi/org/shobo/sonota/nenpoh.files/0218_20251007.pdf">PDF</a></li>
     <li>横浜市統計書「救急出場件数と搬送人員（昭和60年〜令和6年）」オープンデータ CSV。<a href="https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/kyukyu.html">ページ</a></li>
     <li>総務省「令和2年国勢調査 従業地・通学地集計」横浜市の概要 — 区別の昼間人口・流入・流出。<a href="https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/kekka/kokusei/r2/r2-04jutsu.files/1026-2020kokucho-jyu-tsu-gaiyou.pdf">PDF</a></li>
+    <li>国土地理院「全国都道府県市区町村別面積調」— 区の面積（令和6年）。<a href="https://www.gsi.go.jp/KOKUJYOHO/MENCHO-title.htm">ページ</a></li>
     <li>区界ポリゴン：国土数値情報（行政区域データ）を加工した niiyz/JapanCityGeoJson（簡略化）。</li>
   </ul>
   <h3>留意点</h3>
@@ -476,7 +491,10 @@ const overYear=(w,sc,th=3000)=>{for(let y=2025;y<=2040;y++){if(annualOf(w,String
 const byAge=(w,y)=>{const m=(y==='2025')?1:scMul(y);const k=dispOf(w,y)/annualOf(w,y);const o={};AGES.forEach(a=>o[a]=w.byAge[y][a]*m*k);return o};
 const popTot=(w,y)=>AGES.reduce((s,a)=>s+w.pop[y][a],0);
 const elderOf=(w,y)=>w.pop[y].e1+w.pop[y].e2+w.pop[y].e3;
-const COUNT_MODES=['disp','pop','elder'];
+const COUNT_MODES=['disp','percap','density','pop','elder'];
+const DISP_MODES=['disp','percap','density'];
+const STATIC_MODES=['day','nontr','arrive'];
+const AREA_CITY=W.reduce((s,w)=>s+w.area,0);
 const agingRate=(w,y)=>{const p=w.pop[y];return (p.e1+p.e2+p.e3)/popTot(w,y)*100};
 const cityTotal=y=>W.reduce((s,w)=>s+dispOf(w,y),0);
 const cityPop=(y,a)=>W.reduce((s,w)=>s+(a?w.pop[y][a]:popTot(w,y)),0);
@@ -489,7 +507,7 @@ PAGES.forEach(([id,lab,ico],i)=>{
   nav.insertAdjacentHTML('beforeend',`<button role="tab" data-page="${id}" aria-selected="${i===0}"><svg viewBox="0 0 24 24">${ico}</svg>${lab}</button>`);
   hdt.insertAdjacentHTML('beforeend',`<button role="tab" data-page="${id}" aria-selected="${i===0}">${lab}</button>`);
 });
-function applyState(q){const h=new URLSearchParams(q);if(h.get('y'))setYear(Math.max(2025,Math.min(2040,+h.get('y'))));if(['A','M','B'].includes(h.get('s'))){state.sc=h.get('s');pressSeg('scSeg','s',state.sc)}if(['disp','pop','elder','aging','day'].includes(h.get('m'))){state.mode=h.get('m');pressSeg('modeSeg','m',state.mode)}if(['abs','diff'].includes(h.get('v'))){state.view=h.get('v');pressSeg('viewSeg','v',state.view)}if(['all','day','night'].includes(h.get('t'))){state.time=h.get('t');pressSeg('timeSeg','t',state.time);document.documentElement.dataset.time=state.time==='all'?'':state.time;applyTheme()}if(h.has('w')){const i=W.findIndex(w=>w.name===h.get('w'));state.sel=i>=0?i:(W[+h.get('w')]?+h.get('w'):null)}}
+function applyState(q){const h=new URLSearchParams(q);if(h.get('y'))setYear(Math.max(2025,Math.min(2040,+h.get('y'))));if(['A','M','B'].includes(h.get('s'))){state.sc=h.get('s');pressSeg('scSeg','s',state.sc)}if(['disp','percap','density','nontr','arrive','pop','elder','aging','day'].includes(h.get('m'))){state.mode=h.get('m');pressSeg('modeSeg','m',state.mode)}if(['abs','diff'].includes(h.get('v'))){state.view=h.get('v');pressSeg('viewSeg','v',state.view)}if(['all','day','night'].includes(h.get('t'))){state.time=h.get('t');pressSeg('timeSeg','t',state.time);document.documentElement.dataset.time=state.time==='all'?'':state.time;applyTheme()}if(h.has('w')){const i=W.findIndex(w=>w.name===h.get('w'));state.sel=i>=0?i:(W[+h.get('w')]?+h.get('w'):null)}}
 function bindMapLinks(root){(root||document).querySelectorAll('a.mapgo').forEach(a=>a.onclick=e=>{e.preventDefault();applyState(a.dataset.state);go('map');if(innerWidth<700||innerHeight<760)setCollapsed(true);if(state.sel!==null){fillSheet(W[state.sel]);sheet.classList.add('open');buildExample(W[state.sel])}else sheet.classList.remove('open');applyMetric()})}
 function go(id){
   document.querySelectorAll('[role=tab][data-page]').forEach(b=>b.setAttribute('aria-selected',b.dataset.page===id));
@@ -513,15 +531,15 @@ intro.addEventListener('click',e=>{if(e.target===intro)intro.classList.remove('s
 const C=h=>{const n=parseInt(h.slice(1),16);return [n>>16&255,n>>8&255,n&255]};
 const hex=c=>'#'+c.map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
 const ramp=(stops,t)=>{t=Math.max(0,Math.min(1,t));const n=stops.length-1;const i=Math.min(n-1,Math.floor(t*n));const A=C(stops[i]),B=C(stops[i+1]),k=t*n-i;return hex(A.map((v,j)=>v+(B[j]-v)*k))};
-const RAMPS={disp:['#dbe7f3','#7fa6d6','#3a5f99','#14213d'],pop:['#e4f3ef','#8fd0c3','#2a9d8f','#14213d'],elder:['#fdf0dc','#f4a259','#c0392b','#5a1a2e'],diff:['#1b998b','#d8dee7','#f4a259','#e63946'],aging:['#cfe8e3','#f4a259','#c0392b'],day:['#1b998b','#d8dee7','#f4a259','#e63946']};
-const RANGE={disp:[7000,23000],pop:[90000,370000],elder:[30000,130000],diff:[-5,15],popdiff:[-12,15],aging:[18,38],day:[70,220]};
+const RAMPS={disp:['#dbe7f3','#7fa6d6','#3a5f99','#14213d'],pop:['#e4f3ef','#8fd0c3','#2a9d8f','#14213d'],percap:['#dbe7f3','#7fa6d6','#3a5f99','#14213d'],density:['#dbe7f3','#7fa6d6','#3a5f99','#14213d'],nontr:['#cfe8e3','#f4a259','#c0392b'],arrive:['#1b998b','#d8dee7','#f4a259','#e63946'],elder:['#fdf0dc','#f4a259','#c0392b','#5a1a2e'],diff:['#1b998b','#d8dee7','#f4a259','#e63946'],aging:['#cfe8e3','#f4a259','#c0392b'],day:['#1b998b','#d8dee7','#f4a259','#e63946']};
+const RANGE={disp:[7000,23000],percap:[45,125],density:[350,1600],nontr:[12,40],arrive:[6,10],pop:[90000,370000],elder:[30000,130000],diff:[-5,15],popdiff:[-12,15],aging:[18,38],day:[70,220]};
 const rampKey=()=>isDiff()?'diff':state.mode;
-const diffHi=()=>state.mode==='pop'?15:state.mode==='elder'?30:(state.year!=='2025'&&state.sc==='B'?40:state.year!=='2025'&&state.sc==='M'?25:15);
+const diffHi=()=>state.mode==='pop'?15:state.mode==='elder'?30:state.mode==='percap'?(state.sc==='B'?50:state.sc==='M'?35:25):(state.year!=='2025'&&state.sc==='B'?40:state.year!=='2025'&&state.sc==='M'?25:15);
 const diffLo=()=>state.mode==='pop'?-12:-5;
-const colorFor=v=>{let [lo,hi]=RANGE[state.mode];if(isDiff()){lo=diffLo();hi=diffHi()}else if(state.mode==='disp'){lo*=bandK();hi*=bandK()}let t;if(state.mode==='day')t=Math.log(v/lo)/Math.log(hi/lo);else t=(v-lo)/(hi-lo);return ramp(RAMPS[rampKey()],t)};
-const heightFor=w=>{const v=metric(w);let t;if(isDiff())t=Math.max(0,Math.min(1.3,(v-diffLo())/(diffHi()-diffLo())));else if(state.mode==='disp')t=v/(23000*bandK());else if(state.mode==='pop')t=v/370000;else if(state.mode==='elder')t=v/130000;else if(state.mode==='aging')t=(v-15)/23;else t=Math.log(v/70)/Math.log(3.2);return 0.4+t*7};
-const metric=w=>{const y=state.year;switch(state.mode){case 'disp':return isDiff()?(dispOf(w,y)/dispOf(w,'2025')-1)*100:dispOf(w,y);case 'pop':return isDiff()?(popTot(w,y)/popTot(w,'2025')-1)*100:popTot(w,y);case 'elder':return isDiff()?(elderOf(w,y)/elderOf(w,'2025')-1)*100:elderOf(w,y);case 'aging':return agingRate(w,y);case 'day':return w.dn}};
-const bandK=()=>state.time==='all'?1:state.time==='day'?S_DAY:1-S_DAY;
+const colorFor=v=>{let [lo,hi]=RANGE[state.mode];if(isDiff()){lo=diffLo();hi=diffHi()}else if(DISP_MODES.includes(state.mode)){lo*=bandK();hi*=bandK()}let t;if(state.mode==='day')t=Math.log(v/lo)/Math.log(hi/lo);else t=(v-lo)/(hi-lo);return ramp(RAMPS[rampKey()],t)};
+const heightFor=w=>{const v=metric(w);let t;if(isDiff())t=Math.max(0,Math.min(1.3,(v-diffLo())/(diffHi()-diffLo())));else if(state.mode==='disp')t=v/(23000*bandK());else if(state.mode==='percap')t=(v-40*bandK())/(90*bandK());else if(state.mode==='density')t=v/(1600*bandK());else if(state.mode==='nontr')t=(v-10)/30;else if(state.mode==='arrive')t=(v-5.5)/4.5;else if(state.mode==='pop')t=v/370000;else if(state.mode==='elder')t=v/130000;else if(state.mode==='aging')t=(v-15)/23;else t=Math.log(v/70)/Math.log(3.2);return 0.4+t*7};
+const metric=w=>{const y=state.year;switch(state.mode){case 'disp':return isDiff()?(dispOf(w,y)/dispOf(w,'2025')-1)*100:dispOf(w,y);case 'pop':return isDiff()?(popTot(w,y)/popTot(w,'2025')-1)*100:popTot(w,y);case 'elder':return isDiff()?(elderOf(w,y)/elderOf(w,'2025')-1)*100:elderOf(w,y);case 'percap':{const v=dispOf(w,y)/popTot(w,y)*1000,b=dispOf(w,'2025')/popTot(w,'2025')*1000;return isDiff()?(v/b-1)*100:v}case 'density':{const v=dispOf(w,y)/w.area;return isDiff()?(v/(dispOf(w,'2025')/w.area)-1)*100:v}case 'nontr':return w.nonTr*100;case 'arrive':return w.arrive;case 'aging':return agingRate(w,y);case 'day':return w.dn}};
+const bandK=()=>(state.time==='all'||!DISP_MODES.includes(state.mode))?1:state.time==='day'?S_DAY:1-S_DAY;
 
 /* ---------- THREE ---------- */
 const stage=document.getElementById('stage');
@@ -546,7 +564,8 @@ W.forEach((w,i)=>{
   w.rings[0].forEach((p,j)=>{const [x,z]=px(p[0],p[1]);if(j===0)shape.moveTo(x,-z);else shape.lineTo(x,-z)});
   const geo=new THREE.ExtrudeGeometry(shape,{depth:1,bevelEnabled:false,steps:1}); geo.rotateX(-Math.PI/2);
   const mat=new THREE.MeshStandardMaterial({color:0x7fa6d6,roughness:.75,metalness:0});
-  const m=new THREE.Mesh(geo,mat); m.userData={i,h:1,target:1}; group.add(m); meshes.push(m);
+  const m=new THREE.Mesh(geo,mat); m.userData={i,h:1,target:1,split:0}; group.add(m); meshes.push(m);
+  const top=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xffffff,roughness:.8,metalness:0,transparent:true,opacity:.92})); top.visible=false; group.add(top); m.userData.top=top;
   const line=new THREE.LineSegments(new THREE.EdgesGeometry(geo,20),new THREE.LineBasicMaterial({color:0x14213d,transparent:true,opacity:.28})); m.add(line); m.userData.line=line;
   const [cx,cz]=px(w.c[0],w.c[1]); const spr=makeLabel(); spr.position.set(cx,1.8,cz); group.add(spr); m.userData.label=spr; m.userData.cx=cx; m.userData.cz=cz;
 });
@@ -604,26 +623,35 @@ function statusText(){const b=BAND[state.time],y=yearLabel(),base=state.year==='
     case 'disp':return isDiff()?[`${b}出場件数の 2024年実績比の増減率（${y}${base?'':'・'+scLabel()}）`,base?'基準年なので全区0%。年を動かすと増減率が出ます。':'高さと色＝増減率。人口減と高齢化の差し引きがそのまま出ます。']:[`${y}の${b}年間救急出場件数`+(base?'':`（${scLabel()}）`),`高さと色＝この件数。${base?'2024年の実績値です。':'区ごとの人口推計 × 年齢別搬送率 × 校正係数で計算。'}${state.time==='all'?'':'昼夜の分け方は市全体の時間帯別実績（昼65%）を当てた概算。'}`];
     case 'pop':return isDiff()?[`人口の 2025年比の増減率（${y}）`,base?'基準年なので全区0%。年を動かすと増減率が出ます。':'高さと色＝人口の増減率（市の行政区別推計・中位）。出場件数の増減率と見比べると、人口が減っても件数が増える区が分かります。']:[`${y}の人口（市の推計）`,`高さと色＝総人口。${base?'2025年1月1日の実績値です。':'横浜市将来人口推計（令和5年推計・中位）の区別の値。'}`];
     case 'elder':return isDiff()?[`65歳以上人口の 2025年比の増減率（${y}）`,base?'基準年なので全区0%。年を動かすと増減率が出ます。':'高さと色＝65歳以上人口の増減率。若い住宅地ほど伸びが大きい。']:[`${y}の65歳以上人口（市の推計）`,`高さと色＝65歳以上の人数（65–74＋75–84＋85歳以上）。${base?'2025年1月1日の実績値です。':'市の行政区別推計（中位）。'}`];
+    case 'percap':return isDiff()?[`住民1,000人あたり出場件数の 2025年比の増減率（${y}）`,'高齢化で住民1人あたりの利用は全区で増える。伸びが大きい区ほど年齢構成の変化が急。']:[`${y}の住民1,000人あたり${b}出場件数`+(base?'':`（${scLabel()}）`),'高さと色＝出場件数 ÷ 区の人口 × 1,000。来街者・病院・繁華街の需要が多い区ほど高い。'];
+    case 'density':return isDiff()?[`出場密度（件/km²）の 2025年比の増減率（${y}）`,'面積は変わらないので、増減率は出場件数と同じ。']:[`${y}の${b}出場密度（件/km²）`+(base?'':`（${scLabel()}）`),'高さと色＝出場件数 ÷ 区の面積。密な区ほど1隊で多くをさばけ、疎な区ほど現場が遠い。面積は港湾・水面を含む。'];
+    case 'nontr':return['不搬送率（出場したが搬送しなかった割合、2024年）','高さと色＝1 − 搬送人員 ÷ 出場件数（区内の救急隊の実績）。市平均19%。理由の8割は本人の辞退。年・前提・時間帯は効きません。'];
+    case 'arrive':return['現場到着までの平均時間（分、2024年）','高さと色＝119番入電後、区内の救急隊が現場に着くまでの平均（出場件数で加重）。市平均8.6分。年・前提・時間帯は効きません。'];
     case 'aging':return[`${y}の65歳以上の割合（市の人口推計）`,'高さと色＝高齢化率。前提や時間帯は人口に関係しないので効きません。'];
     case 'day':return['昼夜間人口比率（2020年国勢調査、全年共通）','高さと色＝昼間人口÷夜間人口×100。100より大きいと昼に人が集まる区。将来推計はありません。'];}}
-function affects(){const m=state.mode,base=state.year==='2025';return{year:m!=='day',sc:m==='disp'&&!base,time:m==='disp',view:COUNT_MODES.includes(m)}}
-const LEG={disp:['出場件数（件/年）','7,000','23,000'],pop:['人口（人）','9万','37万'],elder:['65歳以上人口（人）','3万','13万'],diff:['2024年比の増減率','−5%','+15%'],aging:['65歳以上の割合','18%','38%'],day:['昼夜間人口比率','70','220']};
+function affects(){const m=state.mode,base=state.year==='2025';return{year:!STATIC_MODES.includes(m),sc:DISP_MODES.includes(m)&&!base,time:DISP_MODES.includes(m),view:COUNT_MODES.includes(m)}}
+const LEG={disp:['出場件数（件/年）','7,000','23,000'],pop:['人口（人）','9万','37万'],percap:['住民1,000人あたり出場件数','45','125'],density:['出場密度（件/km²）','350','1,600'],nontr:['不搬送率','12%','40%'],arrive:['現場到着時間（分）','6','10'],elder:['65歳以上人口（人）','3万','13万'],diff:['2024年比の増減率','−5%','+15%'],aging:['65歳以上の割合','18%','38%'],day:['昼夜間人口比率','70','220']};
 function applyMetric(){
   const y=state.year;
-  meshes.forEach(m=>{const w=W[m.userData.i],v=metric(w);m.userData.target=heightFor(w);m.material.color.set(colorFor(v));
+  const splitOn=state.mode==='disp'&&!isDiff();
+  meshes.forEach(m=>{const w=W[m.userData.i],v=metric(w);m.userData.target=heightFor(w);m.material.color.set(colorFor(v));m.userData.split=splitOn?w.nonTr:0;m.userData.top.visible=splitOn;if(splitOn){const c=new THREE.Color(colorFor(v));m.userData.top.material.color.copy(c).lerp(new THREE.Color(state.time==='night'?0x0e1730:0xffffff),0.6)}
     m.userData.line.material.opacity=(state.sel===m.userData.i)?.95:.28;
-    let sub;if(isDiff())sub=(y==='2025')?'基準':pct(v);else if(state.mode==='disp')sub=fmt(v);else if(state.mode==='pop'||state.mode==='elder')sub=man(v);else if(state.mode==='aging')sub=v.toFixed(1)+'%';else sub=w.dn.toFixed(0);
+    let sub;if(isDiff())sub=(y==='2025')?'基準':pct(v);else if(state.mode==='disp')sub=fmt(v);else if(state.mode==='pop'||state.mode==='elder')sub=man(v);else if(state.mode==='percap')sub=v.toFixed(0);else if(state.mode==='density')sub=fmt(v);else if(state.mode==='nontr')sub=v.toFixed(0)+'%';else if(state.mode==='arrive')sub=v.toFixed(1)+'分';else if(state.mode==='aging')sub=v.toFixed(1)+'%';else sub=w.dn.toFixed(0);
     setLabel(m.userData.label,w.name,sub,state.sel===m.userData.i)});
   const d=document.getElementById('totD'),tv=document.getElementById('totV'),tu=document.getElementById('totU');
   if(state.mode==='aging'){const a=(cityPop(y,'e1')+cityPop(y,'e2')+cityPop(y,'e3'))/cityPop(y)*100,a0=(cityPop('2025','e1')+cityPop('2025','e2')+cityPop('2025','e3'))/cityPop('2025')*100;tv.textContent=a.toFixed(1)+'%';tu.textContent='市全体の65歳以上の割合';d.textContent=y==='2025'?`65歳以上 ${man(cityPop(y,'e1')+cityPop(y,'e2')+cityPop(y,'e3'))}人`:`2025年 ${a0.toFixed(1)}% → ${pct(a-a0,1).replace('%','pt')}`;d.className='d num '+(a>a0?'up':'')}
   else if(state.mode==='pop'){const t=cityPop(y),t0=cityPop('2025');tv.textContent=fmt(t);tu.textContent='市全体の人口（人）';d.textContent=y==='2025'?'2025年1月1日 実績':`2025年比 ${pct((t/t0-1)*100)}`;d.className='d num '+(y==='2025'?'':(t>=t0?'up':'dn'))}
+  else if(state.mode==='percap'){const t=cityTotal(y)/cityPop(y)*1000,t0=cityTotal('2025')/cityPop('2025')*1000;tv.textContent=t.toFixed(1);tu.textContent=`市全体の住民1,000人あたり${BAND[state.time]}出場件数`;d.textContent=y==='2025'?'2024年実績':`2025年比 ${pct((t/t0-1)*100)}`;d.className='d num '+(y==='2025'?'':'up')}
+  else if(state.mode==='density'){const t=cityTotal(y)/AREA_CITY,t0=cityTotal('2025')/AREA_CITY;tv.textContent=fmt(t);tu.textContent=`市全体の${BAND[state.time]}出場密度（件/km²・438km²）`;d.textContent=y==='2025'?'2024年実績':`2025年比 ${pct((t/t0-1)*100)}`;d.className='d num '+(y==='2025'?'':(t>=t0?'up':'dn'))}
+  else if(state.mode==='nontr'){tv.textContent=(DATA.cityNonTr*100).toFixed(1)+'%';tu.textContent='市全体の不搬送率（2024年）';d.textContent='不搬送 49,676件。うち辞退 81%・死亡 8%・途中帰署 4%';d.className='d num'}
+  else if(state.mode==='arrive'){tv.textContent=DATA.cityArrive.toFixed(1)+'分';tu.textContent='市全体の現場到着までの平均時間（2024年）';d.textContent='平均距離 2.7km。119番から病院到着まで平均46.7分';d.className='d num'}
   else if(state.mode==='elder'){const t=W.reduce((s,w)=>s+elderOf(w,y),0),t0=W.reduce((s,w)=>s+elderOf(w,'2025'),0);tv.textContent=fmt(t);tu.textContent='市全体の65歳以上人口（人）';d.textContent=y==='2025'?'2025年1月1日 実績':`2025年比 ${pct((t/t0-1)*100)}`;d.className='d num '+(y==='2025'?'':(t>=t0?'up':'dn'))}
   else if(state.mode==='day'){const dn=W.reduce((s,w)=>s+w.day20,0)/W.reduce((s,w)=>s+w.night20,0)*100;tv.textContent=dn.toFixed(1);tu.textContent='市全体の昼夜間人口比率（2020年）';d.textContent='100を下回る＝市外へ通勤する人の方が多い';d.className='d num'}
   else{const t=cityTotal(y);tv.textContent=fmt(t);
   if(y==='2025'){d.textContent=`2024年実績 ／ 1日 ${fmt(t/365)}件`;d.className='d num'}else{const dd=(t/cityTotal('2025')-1)*100;d.textContent=`2024年比 ${pct(dd)} ／ 1日 ${fmt(t/365)}件`;d.className='d num '+(dd>=0?'up':'dn')}}
-  const L=LEG[isDiff()?'diff':state.mode].slice();if(isDiff()){L[0]=(state.mode==='pop'?'人口の2025年比':state.mode==='elder'?'65歳以上人口の2025年比':'出場件数の2024年比');L[1]=diffLo()+'%';L[2]='+'+diffHi()+'%'}else if(state.mode==='disp'){L[1]=fmt(7000*bandK());L[2]=fmt(23000*bandK())}document.getElementById('legT').textContent=L[0];document.getElementById('legLo').textContent=L[1];document.getElementById('legHi').textContent=L[2];
+  const L=LEG[isDiff()?'diff':state.mode].slice();if(isDiff()){L[0]=({pop:'人口の2025年比',elder:'65歳以上人口の2025年比',percap:'1,000人あたりの2025年比',density:'出場密度の2025年比'})[state.mode]||'出場件数の2024年比';L[1]=diffLo()+'%';L[2]='+'+diffHi()+'%'}else if(state.mode==='disp'){L[1]=fmt(7000*bandK());L[2]=fmt(23000*bandK())}else if(state.mode==='percap'){L[1]=(45*bandK()).toFixed(0);L[2]=(125*bandK()).toFixed(0)}else if(state.mode==='density'){L[1]=fmt(350*bandK());L[2]=fmt(1600*bandK())}document.getElementById('legT').textContent=L[0];document.getElementById('legLo').textContent=L[1];document.getElementById('legHi').textContent=L[2];
   document.getElementById('legBar').style.background=`linear-gradient(90deg,${RAMPS[rampKey()].join(',')})`;
-  document.getElementById('legH').textContent='高さも同じ指標（平行投影で比較可）';
+  document.getElementById('legH').textContent=splitOn?'高さも同じ指標。薄い下段＝搬送しなかった出場（不搬送）':'高さも同じ指標（平行投影で比較可）';
   const [l1,l2]=statusText();document.getElementById('stL1').textContent=l1;document.getElementById('stL2').textContent=l2;
   const af=affects();[['rowYear','year'],['rowSc','sc'],['rowTime','time'],['rowView','view']].forEach(([id,k])=>{const r=document.getElementById(id);r.classList.toggle('off',!af[k]);r.querySelectorAll('button:not(.q),input').forEach(b=>b.disabled=!af[k])});
   if(state.mode==='disp')document.getElementById('totU').textContent=`市全体の${BAND[state.time]}救急出場件数（件/年）`;
@@ -634,8 +662,8 @@ function applyMetric(){
 /* ---------- mini trend chart ---------- */
 const YEARS=[];for(let y=2025;y<=2040;y++)YEARS.push(String(y));
 function valueAt(ws,y,sc){const m=state.mode;const sum=f=>ws.reduce((s,w)=>s+f(w),0);
-  let v;if(m==='disp')v=sum(w=>bandOf(w,y,state.time,sc));else if(m==='pop')v=sum(w=>popTot(w,y));else if(m==='elder')v=sum(w=>elderOf(w,y));else if(m==='aging')v=sum(w=>elderOf(w,y))/sum(w=>popTot(w,y))*100;else return null;
-  if(isDiff()){let b;if(m==='disp')b=sum(w=>bandOf(w,'2025',state.time,sc));else if(m==='pop')b=sum(w=>popTot(w,'2025'));else b=sum(w=>elderOf(w,'2025'));v=(v/b-1)*100}return v}
+  let v;if(m==='disp')v=sum(w=>bandOf(w,y,state.time,sc));else if(m==='percap')v=sum(w=>bandOf(w,y,state.time,sc))/sum(w=>popTot(w,y))*1000;else if(m==='density')v=sum(w=>bandOf(w,y,state.time,sc))/sum(w=>w.area);else if(m==='pop')v=sum(w=>popTot(w,y));else if(m==='elder')v=sum(w=>elderOf(w,y));else if(m==='aging')v=sum(w=>elderOf(w,y))/sum(w=>popTot(w,y))*100;else return null;
+  if(isDiff()){let b;if(m==='disp')b=sum(w=>bandOf(w,'2025',state.time,sc));else if(m==='percap')b=sum(w=>bandOf(w,'2025',state.time,sc))/sum(w=>popTot(w,'2025'))*1000;else if(m==='density')b=sum(w=>bandOf(w,'2025',state.time,sc))/sum(w=>w.area);else if(m==='pop')b=sum(w=>popTot(w,'2025'));else b=sum(w=>elderOf(w,'2025'));v=(v/b-1)*100}return v}
 const miniEl=document.getElementById('mini'),miniOpen=document.getElementById('miniOpen');
 function setMini(show){miniEl.hidden=!show;miniOpen.hidden=show;try{localStorage.setItem('yk2035-mini',show?'1':'0')}catch(e){}}
 document.getElementById('miniClose').onclick=()=>setMini(false);miniOpen.onclick=()=>{setMini(true);drawMini()};
@@ -643,12 +671,12 @@ try{if(localStorage.getItem('yk2035-mini')==='0')setMini(false)}catch(e){}
 function drawMini(){if(miniEl.hidden)return;
   const ws=state.sel===null?W:[W[state.sel]],name=state.sel===null?'市全体':W[state.sel].name+'区';
   const T=document.getElementById('miniT'),S=document.getElementById('miniSvg');
-  if(state.mode==='day'){T.textContent=`推移なし — 昼夜間比は2020年固定（${name}）`;S.innerHTML='';return}
-  const showB=state.mode==='disp';
+  if(STATIC_MODES.includes(state.mode)){T.textContent=state.mode==='day'?`推移なし — 昼夜間比は2020年固定（${name}）`:`推移なし — 2024年の実績値（${name}）`;S.innerHTML='';return}
+  const showB=DISP_MODES.includes(state.mode);
   const A=YEARS.map(y=>valueAt(ws,y,'A')),B=showB?YEARS.map(y=>valueAt(ws,y,'B')):null,M=showB?YEARS.map(y=>valueAt(ws,y,'M')):null;
   const all=B?A.concat(B):A;let lo=Math.min(...all),hi=Math.max(...all);if(isDiff()||state.mode==='aging'){lo=Math.min(lo,0)}const pad=(hi-lo)*0.12||1;lo-=pad;hi+=pad;
   const Wd=220,H=96,x0=34,x1=Wd-16,y0=10,y1=H-16;const X=i=>x0+i/(YEARS.length-1)*(x1-x0),Y=v=>y1-(v-lo)/(hi-lo)*(y1-y0);
-  const f=v=>isDiff()||state.mode==='aging'?(v>0&&isDiff()?'+':'')+v.toFixed(isDiff()?0:0)+'%':(v>=100000?(v/10000).toFixed(0)+'万':v>=10000?(v/10000).toFixed(1)+'万':fmt(v));
+  const f=v=>isDiff()||state.mode==='aging'?(v>0&&isDiff()?'+':'')+v.toFixed(0)+'%':state.mode==='percap'?v.toFixed(0):(v>=100000?(v/10000).toFixed(0)+'万':v>=10000?(v/10000).toFixed(1)+'万':fmt(v));
   const ci=YEARS.indexOf(state.year),cur=(state.sc==='B'&&B)?B:(state.sc==='M'&&M)?M:A;
   let g=`<line x1="${x0}" x2="${x1}" y1="${Y(lo+pad)}" y2="${Y(lo+pad)}" stroke="var(--line)"/><line x1="${x0}" x2="${x1}" y1="${Y(hi-pad)}" y2="${Y(hi-pad)}" stroke="var(--line)"/>`;
   g+=`<text x="${x0-4}" y="${Y(hi-pad)+4}" font-size="9" fill="var(--ink3)" text-anchor="end">${f(hi-pad)}</text><text x="${x0-4}" y="${Y(lo+pad)+4}" font-size="9" fill="var(--ink3)" text-anchor="end">${f(lo+pad)}</text>`;
@@ -660,7 +688,7 @@ function drawMini(){if(miniEl.hidden)return;
   if(ci>=0){g+=`<line x1="${X(ci)}" x2="${X(ci)}" y1="${y0}" y2="${y1}" stroke="var(--ink3)" stroke-width="1"/><circle cx="${X(ci)}" cy="${Y(cur[ci])}" r="3.5" fill="${state.sc==='B'&&B?'#e63946':state.sc==='M'&&M?'#f4a259':'var(--navy)'}"/>`;
     const tx=ci>YEARS.length/2?X(ci)-6:X(ci)+6;g+=`<text x="${tx}" y="${Y(cur[ci])-6}" font-size="10" font-weight="800" font-family="Manrope" fill="var(--ink)" text-anchor="${ci>YEARS.length/2?'end':'start'}">${f(cur[ci])}</text>`}
   S.innerHTML=g;
-  const lab={disp:BAND[state.time]+'出場件数',pop:'人口',elder:'65歳以上人口',aging:'高齢化率'}[state.mode];
+  const lab={disp:BAND[state.time]+'出場件数',percap:BAND[state.time]+'1,000人あたり出場',density:BAND[state.time]+'出場密度',pop:'人口',elder:'65歳以上人口',aging:'高齢化率'}[state.mode];
   T.textContent=`${name}・${lab}${isDiff()?'の増減率':''} 2025→2040${showB?'（紺＝人口のみ／橙＝中間／赤＝上限）':''}`;
 }
 function seg(id,attr,cb){const s=document.getElementById(id);s.querySelectorAll('button').forEach(b=>b.onclick=()=>{s.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');cb(b.dataset[attr])})}
@@ -668,7 +696,7 @@ const ctl=document.getElementById('ctl'),ctlT=document.getElementById('ctlToggle
 function setCollapsed(v){ctl.classList.toggle('collapsed',v);ctlT.textContent=v?'条件を変える':'条件を閉じる';ctlT.setAttribute('aria-expanded',!v);requestAnimationFrame(updCam)}
 ctlT.onclick=()=>setCollapsed(!ctl.classList.contains('collapsed'));
 const QTEXT={
- mode:'<b>何を見るか。</b>出場件数＝救急車が出動した年間件数（区内で発生したもの。2025年は2024年実績、以降は推計）。人口＝区の総人口。高齢者人口＝65歳以上の人数。高齢化率＝65歳以上÷総人口。昼夜間比＝昼間人口÷夜間人口×100（2020年国勢調査、年によらず固定）。',
+ mode:'<b>何を見るか。</b>出場件数＝救急車が出動した年間件数（区内で発生。2025年は2024年実績、以降は推計。柱の薄い下段は不搬送分）。1,000人あたり＝出場件数÷区の人口×1,000。件/km²＝出場件数÷区の面積（港湾・水面含む）。不搬送率＝出場したが搬送しなかった割合（2024年、区内の救急隊の実績）。到着時間＝119番から現場到着までの平均分（2024年）。人口＝総人口。高齢者人口＝65歳以上。高齢化率＝65歳以上÷総人口。昼夜間比＝昼間人口÷夜間人口×100（2020年固定）。',
  view:'<b>実数</b>はその年の値そのもの。<b>2025年比の増減率</b>は2025年（基準＝2024年実績）からの変化率で、出場件数・人口・高齢者人口で使えます。人口が減っても出場件数が増える区を見つけるときに便利です。',
  year:'2025年は基準年で、出場件数は2024年の実績、人口は2025年1月1日の実績。2026年以降は横浜市将来人口推計（令和5年推計・中位）にもとづく推計です。昼夜間比だけは年で変わりません。',
  sc:'<b>搬送率（＝利用率）</b>は、年齢ごとに「1年のうちに救急搬送される人の割合」です（85歳以上なら25.7%、15–64歳なら2.8%）。将来この率をどう置くかの前提で、出場件数にだけ効きます。<br><b>人口のみ</b>：率を2024年のまま固定。人口の増減と年齢構成だけで決まる下限。<br><b>中間</b>：率が年+0.75%ずつ上がる（2035年に+8%）。上昇傾向が鈍る想定。<br><b>上限</b>：率が年+1.5%ずつ上がる（2035年に+18%）。2013〜2024年の傾向がそのまま続く仮定で、上振れ側。',
@@ -715,6 +743,8 @@ function fillSheet(w){
   const net=w.in-w.out;
   document.getElementById('shDay').innerHTML=`<b>昼夜間人口</b> 比率 ${w.dn}（昼 ${fmt(w.day20)}人／夜 ${fmt(w.night20)}人、2020年）。通勤・通学の${net>=0?'流入超過':'流出超過'} ${fmt(Math.abs(net))}人は年間 <b>${net>=0?'+':'−'}${fmt(Math.abs(w.dayExtra))}件</b> 相当。転院搬送 ${fmt(w.transfer24)}件（出場の${(w.transfer24/w.disp24*100).toFixed(1)}%）。校正係数 ${w.fac.toFixed(2)}。`;
   document.getElementById('shRead').textContent=readingOf(w);
+  const u2=unitsOf(w);document.getElementById('shOps').innerHTML=`<b>現場到着</b> 平均 ${w.arrive.toFixed(1)}分・${w.dist.toFixed(1)}km（市平均 ${DATA.cityArrive.toFixed(1)}分・2.7km）。<b>1隊あたり</b> ${(w.area/u2).toFixed(1)}km²（面積 ${w.area}km²）。<b>不搬送率</b> ${(w.nonTr*100).toFixed(0)}%（市平均 ${(DATA.cityNonTr*100).toFixed(0)}%）。住民1,000人あたり ${(w.disp24/popTot(w,'2025')*1000).toFixed(0)}件・${fmt(w.disp24/w.area)}件/km²。`;
+  const T=w.types,tt=w.disp24,TC=[['急病','#3a7bd5'],['一般負傷','#9ad0f5'],['交通事故','#f4a259'],['転院搬送','#8e3b8f']];let other=tt;const segs=TC.map(([k,c])=>{other-=T[k];return `<i style="width:${(T[k]/tt*100).toFixed(1)}%;background:${c}" title="${k}"></i>`}).join('')+`<i style="width:${(other/tt*100).toFixed(1)}%;background:#c9d2de"></i>`;document.getElementById('st3').innerHTML=segs;document.getElementById('st3v').textContent=`急病 ${(T['急病']/tt*100).toFixed(0)}%・転院 ${(T['転院搬送']/tt*100).toFixed(1)}%`;
 }
 function readingOf(w){
   const dd=(w.disp['2035']/w.disp24-1)*100,ag=agingRate(w,'2035'),p=(popTot(w,'2035')/popTot(w,'2025')-1)*100,e3=(w.pop['2035'].e3/w.pop['2025'].e3-1)*100;
@@ -781,9 +811,19 @@ function pairChart(id){const rk=[...W].map(w=>({n:w.name,p:(popTot(w,'2035')/pop
     g+=`<rect x="${Math.min(x0,x0+r.p*sc)}" y="${y+2}" width="${Math.abs(r.p*sc)}" height="9" fill="#1b998b" rx="2"/><rect x="${Math.min(x0,x0+r.d*sc)}" y="${y+12}" width="${Math.abs(r.d*sc)}" height="9" fill="#e63946" rx="2"/>`;
     g+=`<text x="${x0+(r.p<0?r.p*sc-4:r.p*sc+4)}" y="${y+10}" font-size="9.5" fill="#1b998b" text-anchor="${r.p<0?'end':'start'}" font-family="Manrope" font-weight="700">${pct(r.p,0)}</text><text x="${x0+r.d*sc+4}" y="${y+20}" font-size="9.5" fill="#e63946" font-family="Manrope" font-weight="700">${pct(r.d,0)}</text>`});
   document.getElementById(id).innerHTML=g}
+function scatterChart(id){const W2=[...W].map(w=>({n:w.name,x:w.disp24/w.area,y:w.arrive,r:w.area/unitsOf(w)}));
+  const X=v=>60+(Math.log(v)-Math.log(300))/(Math.log(1800)-Math.log(300))*520,Y=v=>320-(v-5.8)/(10-5.8)*290;
+  let g=`<g stroke="#e3e8ef">${[6,7,8,9,10].map(v=>`<line x1="60" x2="580" y1="${Y(v)}" y2="${Y(v)}"/>`).join('')}${[300,500,1000,1500].map(v=>`<line x1="${X(v)}" x2="${X(v)}" y1="30" y2="320"/>`).join('')}</g>`;
+  g+=[6,7,8,9,10].map(v=>`<text x="54" y="${Y(v)+4}" font-size="11" fill="#8e9bae" text-anchor="end">${v}分</text>`).join('')+[300,500,1000,1500].map(v=>`<text x="${X(v)}" y="338" font-size="11" fill="#8e9bae" text-anchor="middle">${fmt(v)}</text>`).join('');
+  g+=`<text x="580" y="352" font-size="11" fill="#5b6b82" text-anchor="end">出場密度（件/km²）</text>`;
+  g+=`<line x1="60" x2="580" y1="${Y(DATA.cityArrive)}" y2="${Y(DATA.cityArrive)}" stroke="#8e9bae" stroke-dasharray="3 3"/><text x="64" y="${Y(DATA.cityArrive)-4}" font-size="10" fill="#8e9bae">市平均 ${DATA.cityArrive.toFixed(1)}分</text>`;
+  W2.forEach(p=>{const r=4+p.r*1.6,c=p.y>=9.3?'#e63946':p.y>=8.6?'#f4a259':'#1b998b';g+=`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="${r}" fill="${c}" opacity=".7"/><text x="${X(p.x)+r+3}" y="${Y(p.y)+4}" font-size="11" font-weight="700" fill="#14213d">${p.n}</text>`});
+  document.getElementById(id).innerHTML=g}
+function nontrRows(){const rk=[...W].map(w=>({n:w.name,v:w.nonTr*100,d:w.unitDisp,t:w.unitTr})).sort((a,b)=>b.v-a.v);
+  return rk.map(r=>`<div class="rank"><span class="nm">${r.n}区</span><span class="barw"><i style="left:0;width:${r.v/45*100}%;background:${r.v>=25?'#e63946':r.v>=19?'#f4a259':'#1b998b'}"></i></span><span class="pct num">${r.v.toFixed(0)}%</span></div>`).join('')}
 function buildCity(){
   document.getElementById('cA').textContent=fmt(A35);document.getElementById('cB').textContent=fmt(B35);document.getElementById('cM').textContent=fmt(M35);
-  SVG.trend('chTrend');SVG.age('chAge');SVG.rate('chRate');pairChart('chPair');document.getElementById('unitList').innerHTML=unitRows().html;
+  SVG.trend('chTrend');SVG.age('chAge');SVG.rate('chRate');pairChart('chPair');document.getElementById('unitList').innerHTML=unitRows().html;scatterChart('chScatter');document.getElementById('nontrList').innerHTML=nontrRows();
   const rk=[...W].map(w=>({n:w.name,d:(w.disp['2035']/w.disp24-1)*100})).sort((a,b)=>b.d-a.d);
   document.getElementById('rankList').innerHTML=rk.map(r=>`<div class="rank"><span class="nm">${r.n}区</span><span class="barw"><i style="left:${r.d>=0?20:20+r.d*4}%;width:${Math.abs(r.d)*4}%;background:${r.d>=0?'#e63946':'#1b998b'}"></i></span><span class="pct num" style="color:${r.d>=0?'#e63946':'#1b998b'}">${pct(r.d)}</span></div>`).join('');
   const rows=W.map(w=>{const oA=overYear(w,'A'),oB=overYear(w,'B');return `<tr><td>${w.name}</td><td>${fmt(popTot(w,'2025'))}</td><td>${fmt(popTot(w,'2035'))}</td><td>${agingRate(w,'2035').toFixed(1)}%</td><td>${fmt(w.disp24)}</td><td>${fmt(w.disp['2035'])}</td><td style="color:${w.disp['2035']>=w.disp24?'#e63946':'#1b998b'};font-weight:700">${pct((w.disp['2035']/w.disp24-1)*100)}</td><td>${fmt(w.disp['2035']*Math.pow(1.0075,11))}</td><td>${fmt(w.disp['2035']*Math.pow(1.015,11))}</td><td>${unitsOf(w)}</td><td style="font-weight:700;color:${w.disp['2035']/unitsOf(w)>=3000?'#e63946':'inherit'}">${fmt(w.disp['2035']/unitsOf(w))}</td><td>${oA||'—'}</td><td>${oB||'—'}</td></tr>`}).join('');
@@ -815,13 +855,15 @@ const SL=[
     const already=rk.filter(r=>r.oA===2025).map(r=>r.n).join('・'),soon=rk.filter(r=>r.oA&&r.oA>2025).map(r=>`${r.n}（${r.oA}）`).join('、'),soonB=rk.filter(r=>r.oB&&r.oB>2025).map(r=>`${r.n}（${r.oB}）`).join('、');
     return `<div class="kick">救急隊の負担</div><h2>1隊あたり年3,000件の線を越える区</h2><div class="cols two"><div>${html}<p class="m">1隊あたり年間出場件数。灰＝2024、色＝2035（人口の変化だけ）。赤は3,000件超。</p></div><div><p><b>2024年時点ですでに3,000件/隊超</b></p><p class="m">${already||'なし'}</p><p style="margin-top:12px"><b>2040年までに超える区（人口の変化だけ）</b></p><p class="m">${soon||'なし'}</p><p style="margin-top:12px"><b>上限シナリオ（搬送率が年+1.5%で上昇）の場合</b></p><p class="m">${soonB||'なし'}</p><div class="callout" style="margin-top:14px">市平均は2024年で2,948件/隊（87隊）。隊は区をまたいで出場するため、区別の値は目安。</div></div></div>`},
   ()=>`<div class="kick">昼間人口と病院</div><h2>人口だけでは説明できない区</h2><div class="cols">${pt('2.1倍','西区の昼間人口÷夜間人口。流入超過は年+2,000件相当。実績はさらに上回り校正係数1.40')}${pt('1.7倍','中区。流入超過は年+2,200件相当。来街者・繁華街需要で校正係数1.69')}${pt('8.0%','戸塚区の出場に占める転院搬送の割合（1,499件・市内最多）。病院立地の影響')}</div><p class="m" style="margin-top:14px">青葉・都筑・港北は昼間に人口が流出し、夜間・休日の在宅高齢者の急病が中心。市全体の出場は9〜10時台がピークで、深夜3〜4時台の3倍。</p>`,
+  ()=>`<div class="kick">密度と到着時間</div><h2>疎な区ほど現場が遠い</h2><div class="cols two"><div><svg class="chart" id="slScatter" viewBox="0 0 600 360"></svg><p class="m">横軸＝出場密度（件/km²）、縦軸＝現場到着までの平均時間（2024年）。円＝1隊あたりカバー面積。</p></div><div>${pt('6.4分','中区の到着時間（最短）。1隊あたり3.7km²、1.9km')}${pt('9.6分','保土ケ谷区（最長）。緑9.5・旭9.4・戸塚9.2・泉9.2分',1)}<p class="m" style="margin-top:12px">市平均8.6分・2.7km。南西部は件数が横ばいでも、高齢化率35%と到着9分超が重なる。</p></div></div>`,
+  ()=>`<div class="kick">不搬送</div><h2>出場の19%は搬送に至らない</h2><div class="cols two"><div>${nontrRows()}<p class="m">区内の救急隊ベースの不搬送率（2024年）</p></div><div>${pt('49,676件','不搬送の件数。理由は辞退81%・死亡8%・途中帰署4%',1)}${pt('37%','中区の不搬送率（市平均19%）。校正係数1.69の相当部分は搬送に至らない出場')}<div class="callout" style="margin-top:14px">不搬送の多い区（中・西・港北・神奈川）は #7119 と軽症対策で出場を減らせる余地が大きい。</div></div></div>`,
   ()=>`<div class="kick">計算方法</div><h2>5つのステップ</h2><svg class="chart" id="slFlow" viewBox="0 0 600 150"></svg><ul><li><b>人口</b>　2025年実績を基準に、市の行政区別推計（中位）の変化率で将来へ</li><li><b>搬送率</b>　消防年報の年齢5歳階級別搬送人員 ÷ 人口（85歳以上 25.7%、15–64歳 2.8%）</li><li><b>昼間補正</b>　通勤・通学の流入超過 × 0.35 × 15–64歳の搬送率</li><li><b>校正</b>　2024年実績に合うよう区ごとに係数を決め、将来も固定</li></ul>`,
   ()=>`<div class="kick">施策への示唆</div><h2>どこに、何を備えるか</h2><ul><li><b>北部・都心へ隊を厚く</b>　都筑・青葉・港北・鶴見と西・中。+2.0万件は1隊3,000件換算で約7隊分</li><li><b>85歳以上の搬送を減らす</b>　高齢者施設との事前連携（かかりつけ医・ACP）と #7119。増加分の中心層なので費用対効果が最も高い</li><li><b>転院搬送の民間移行</b>　戸塚・港南で1件あたり拘束時間を短縮</li><li><b>南西部は重症度への備え</b>　件数は横ばいでも高齢化率35%。現場滞在時間の増加に対応</li></ul>`,
   ()=>`<div class="kick">出典と留意点</div><h2>公表資料から再計算した推計です</h2><ul class="m"><li>横浜市将来人口推計（令和5年推計・中位）行政区別・年齢5歳階級別</li><li>横浜市の人口 第2部 年齢別人口（令和7年1月1日現在）</li><li>横浜市消防局 令和6年 消防年報 災害統計（確定値）</li><li>令和2年国勢調査 従業地・通学地集計（昼夜間人口）</li></ul><p class="m">人口の将来値は市推計の前提に依存します。搬送率は市全体の値を全区に適用し、区の特性は校正係数に含めています。横浜市の公式見解ではありません。</p><p class="m">詳しい手順と実例計算は「方法」ページ、各区の数値は「地図」で確認できます。</p>`,
 ];
 const deck=document.getElementById('deckStage'),dots=document.getElementById('dots');let cur=0;
 SL.forEach((f,i)=>{deck.insertAdjacentHTML('beforeend',`<div class="slide" data-i="${i}"><div class="in">${f()}</div></div>`);dots.insertAdjacentHTML('beforeend',`<i data-i="${i}"></i>`)});
-SVG.trend('slTrend');SVG.rate('slRate');SVG.age('slAge');SVG.flow('slFlow');
+SVG.trend('slTrend');SVG.rate('slRate');SVG.age('slAge');SVG.flow('slFlow');scatterChart('slScatter');
 function showSlide(i){cur=(i+SL.length)%SL.length;deck.querySelectorAll('.slide').forEach(s=>s.classList.toggle('show',+s.dataset.i===cur));dots.querySelectorAll('i').forEach(d=>d.classList.toggle('on',+d.dataset.i===cur));document.getElementById('cnt').textContent=`${cur+1} / ${SL.length}`}
 document.getElementById('prevS').onclick=()=>showSlide(cur-1);document.getElementById('nextS').onclick=()=>showSlide(cur+1);
 dots.querySelectorAll('i').forEach(d=>d.onclick=()=>showSlide(+d.dataset.i));
@@ -832,9 +874,9 @@ showSlide(0);
 /* ---------- loop ---------- */
 let t0=performance.now();const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
 function loop(now){const dt=Math.min(0.05,(now-t0)/1000);t0=now;if(auto&&!reduce){theta+=dt*0.06;updCam()}
-  meshes.forEach(m=>{const d=m.userData.target-m.userData.h;if(Math.abs(d)>0.002){m.userData.h+=d*Math.min(1,dt*6);m.scale.y=m.userData.h;m.userData.label.position.y=m.userData.h+0.9}});
+  meshes.forEach(m=>{const d=m.userData.target-m.userData.h;if(Math.abs(d)>0.002||m.userData.dirty!==m.userData.split){m.userData.h+=d*Math.min(1,dt*6);const h=m.userData.h,sp=m.userData.split;m.scale.y=h*(1-sp);m.position.y=h*sp;m.userData.top.scale.y=Math.max(0.001,h*sp);m.userData.top.position.y=0;m.userData.label.position.y=h+0.9;m.userData.dirty=sp}});
   if(document.getElementById('page-map').classList.contains('show'))renderer.render(scene,cam);requestAnimationFrame(loop)}
-(function restore(){try{const h=new URLSearchParams(location.hash.slice(1));if(h.get('y'))setYear(Math.max(2025,Math.min(2040,+h.get('y'))));if(['A','M','B'].includes(h.get('s'))){state.sc=h.get('s');pressSeg('scSeg','s',state.sc)}if(['disp','pop','elder','aging','day'].includes(h.get('m'))){state.mode=h.get('m');pressSeg('modeSeg','m',state.mode)}if(h.get('m')==='diff'){state.mode='disp';state.view='diff'}if(['abs','diff'].includes(h.get('v'))){state.view=h.get('v')}pressSeg('viewSeg','v',state.view);if(['all','day','night'].includes(h.get('t'))){state.time=h.get('t');pressSeg('timeSeg','t',state.time);document.documentElement.dataset.time=state.time==='all'?'':state.time}if(h.get('w')!==null&&W[+h.get('w')]){state.sel=+h.get('w')}}catch(e){}})();
+(function restore(){try{const h=new URLSearchParams(location.hash.slice(1));if(h.get('y'))setYear(Math.max(2025,Math.min(2040,+h.get('y'))));if(['A','M','B'].includes(h.get('s'))){state.sc=h.get('s');pressSeg('scSeg','s',state.sc)}if(['disp','percap','density','nontr','arrive','pop','elder','aging','day'].includes(h.get('m'))){state.mode=h.get('m');pressSeg('modeSeg','m',state.mode)}if(h.get('m')==='diff'){state.mode='disp';state.view='diff'}if(['abs','diff'].includes(h.get('v'))){state.view=h.get('v')}pressSeg('viewSeg','v',state.view);if(['all','day','night'].includes(h.get('t'))){state.time=h.get('t');pressSeg('timeSeg','t',state.time);document.documentElement.dataset.time=state.time==='all'?'':state.time}if(h.get('w')!==null&&W[+h.get('w')]){state.sel=+h.get('w')}}catch(e){}})();
 applyTheme();updCam();applyMetric();buildCity();bindMapLinks();if(state.sel!==null){fillSheet(W[state.sel]);sheet.classList.add('open');buildExample(W[state.sel])}meshes.forEach(m=>{m.userData.h=0.05;m.scale.y=0.05});requestAnimationFrame(loop);
 setTimeout(()=>document.getElementById('loading').classList.add('hide'),300);
 })();
