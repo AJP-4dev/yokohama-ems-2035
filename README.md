@@ -1,0 +1,41 @@
+# 横浜市 救急需要の未来地図 2025→2035（v2）
+
+公開: https://claude.ai/artifact/Q5u7dTpGuNHD7BEVfKN5pa
+
+## 構成
+| ファイル | 内容 |
+|---|---|
+| `index.html` | 完成版の単一HTML（Three.js r128、データ埋込済み）。`build_html.py` が生成 |
+| `template.html` | HTMLの正本。`/*__DATA__*/` に `data.js` を注入する |
+| `data.js` | `build_model.py` が出力する `const DATA=...` |
+| `src/extract_projection.py` | 市推計xlsx → `src/projection.json`（区×年×5区分、検算付き） |
+| `src/build_model.py` | 推計モデル v2 → `src/model.json` + `data.js` |
+| `src/build_html.py` | `template.html` + `data.js` → `index.html` |
+| `src/patch_template_v2.py` | v1→v2 のテンプレ更新パッチ（適用済み・再実行不要） |
+| `src/base_inputs.json` | 2025.1.1 実績人口（区別・年齢4区分）、2020国勢調査 昼夜間人口、年次系列 |
+| `src/wards_geo.json` | 18区の簡略化ポリゴン（niiyz/JapanCityGeoJson） |
+| `src/0048_20240410.xlsx` | 市将来人口推計（令和5年推計・中位）行政区別・各歳 2020〜2070 |
+| `src/0046_20240326.xlsx` | 同 市全体（未使用。0048の「横浜市」シートと同一） |
+| `src/r6_saigai.pdf` | 消防局 令和6年消防年報 災害統計（確定値）。p.98 概況、p.100 行政区別、p.102 時間帯別、p.106 年齢5歳階級別搬送、p.107 程度別 |
+
+再生成: `.venv/bin/python src/build_model.py && .venv/bin/python src/build_html.py`
+（venv: `python3 -m venv .venv && .venv/bin/pip install openpyxl pymupdf pypdf`）
+
+## v2 で変わったこと（2026-10-05）
+- 区別人口の将来値を**市の行政区別推計（中位）の5歳階級別変化率**に置換（簡易コーホート比例法を廃止）
+- 基準人口は R7.1.1 実績（4区分）を市推計2025年の区別年齢構成で21階級に按分
+- 搬送率を**年齢5歳階級別の実測**に（年報 p.106）。85歳以上 25.7%、75–84歳 12.8%、65–74歳 6.3%
+- 区別出場件数・転院搬送を年報の確定値に。救急隊数 85.5隊
+- 表示は 0–14 / 15–64 / 65–74 / 75–84 / 85+ の5区分、人口・出場は 2025〜2040 各年を data.js に保持（UIは 2025/2030/2035）
+
+結果（A）: 2025 256,431 → 2030 268,697 (+4.8%) → 2035 276,360 (+7.8%) → 2040 279,273。B: 2035 325,538。
+v1（+1.4%）との差はほぼ全て 85歳以上の分離（人口 +42%・搬送率25.7%）による。
+
+## 年報PDFの読み方
+文字抽出は CID フォントで文字化けするため、`pymupdf` で画像化して目視転記した（`src/build_model.py` の定数）。
+区別×年齢別の搬送実績は年報に**無い**（市全体の年齢別と、区別の事故種別のみ）。
+
+## 次の拡張候補
+- 年スライダー（data.js は各年あり）
+- 時間帯別（年報 p.102 に 出場・搬送の時間帯別あり）で昼/夜レイヤー
+- 署所別平均時間（年報 p.104 付近）と救急隊配置の重ね描き
