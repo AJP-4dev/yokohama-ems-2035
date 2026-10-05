@@ -1,6 +1,7 @@
 # 横浜市 救急需要の未来地図 2025→2035（v2）
 
-公開: https://claude.ai/artifact/Q5u7dTpGuNHD7BEVfKN5pa
+公開: https://ajp-4dev.github.io/yokohama-ems-2035/ （GitHub Pages・公開リポ AJP-4dev/yokohama-ems-2035）
+Artifact版: https://claude.ai/artifact/Q5u7dTpGuNHD7BEVfKN5pa
 
 ## 構成
 | ファイル | 内容 |
