@@ -130,10 +130,14 @@ th{color:var(--ink2);font-weight:500;font-size:11px;position:sticky;top:0;backgr
 #status .s1{font-size:13px;font-weight:700;line-height:1.45}
 #status .s2{font-size:11.5px;color:var(--ink2);line-height:1.45;margin-top:2px}
 #totrow{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;max-width:560px}
-#mini{pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 8px 4px;width:236px;box-shadow:0 2px 12px rgba(20,33,61,.07)}
+#mini{pointer-events:auto;position:relative;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 8px 4px;width:236px;box-shadow:0 2px 12px rgba(20,33,61,.07)}
 #mini .mt{font-size:10.5px;color:var(--ink2);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #mini svg{width:220px;height:96px;display:block}
-@media (min-width:900px){ #mini{position:fixed;right:16px;top:calc(var(--head) + var(--sat) + 12px);width:300px} #mini svg{width:284px;height:120px} }
+#miniClose{position:absolute;right:4px;top:3px;width:22px;height:22px;border:0;border-radius:50%;background:var(--surface2);color:var(--ink2);font-size:13px;cursor:pointer;line-height:1}
+#mini .mt{padding-right:24px}
+#miniOpen{pointer-events:auto;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;color:var(--ink);box-shadow:0 2px 10px rgba(20,33,61,.08);align-self:flex-start}
+#mini[hidden]{display:none}
+@media (min-width:900px){ #mini{position:fixed;right:16px;top:calc(var(--head) + var(--sat) + 12px);width:300px} #mini svg{width:284px;height:120px} #miniOpen{position:fixed;right:16px;top:calc(var(--head) + var(--sat) + 12px)} }
 #hint{pointer-events:none;font-size:12px;color:var(--ink2);background:rgba(255,255,255,.8);display:inline-block;padding:5px 10px;border-radius:8px;max-width:100%;line-height:1.5}
 #total{pointer-events:none;line-height:1.1;margin:2px 0 0 2px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
 #total .u{width:100%}
@@ -175,7 +179,7 @@ th{color:var(--ink2);font-weight:500;font-size:11px;position:sticky;top:0;backgr
 details{border-top:1px solid var(--line);margin-top:10px;padding-top:8px}
 summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weight:700}
 @media (min-width:900px){
-  #sheet{left:auto;right:16px;width:400px;max-height:72vh;bottom:16px}
+  #sheet{left:auto;right:16px;width:400px;max-height:calc(100vh - 230px);bottom:16px}
   #legend{bottom:16px} #pickBtn{bottom:16px;right:auto;left:236px} #picker{bottom:62px;right:auto;left:236px}
   #ctl{left:16px;right:auto;max-width:620px}
   #tools{top:auto;bottom:80px;right:16px}
@@ -264,7 +268,7 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
     </div>
     <div id="status"><div class="txt"><div class="s1" id="stL1"></div><div class="s2" id="stL2"></div></div><button id="ctlToggle" aria-expanded="true">条件を閉じる</button></div>
     <div id="totrow"><div id="total"><div class="v num" id="totV">—</div><div class="u" id="totU">市全体の救急出場件数（件/年）</div><div class="d num" id="totD"></div></div>
-    <div id="mini"><div class="mt" id="miniT">推移 2025→2040</div><svg id="miniSvg" viewBox="0 0 220 96"></svg></div></div>
+    <div id="mini"><button id="miniClose" aria-label="グラフを閉じる">×</button><div class="mt" id="miniT">推移 2025→2040</div><svg id="miniSvg" viewBox="0 0 220 96"></svg></div><button id="miniOpen" hidden>推移グラフを表示</button></div>
   </div>
   <div id="tools">
     <button id="pan" aria-label="移動モード（1本指で地図を動かす）" aria-pressed="false" title="移動"><svg viewBox="0 0 24 24"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg></button>
@@ -507,8 +511,9 @@ function setLabel(spr,text,sub,hot){const c=spr.userData.canvas,s=2,g=c.getConte
 const portrait=()=>innerWidth/innerHeight<0.8;
 const DEF={theta:-0.35,phi:0.95,dist:(portrait()?52:34)};
 let theta=DEF.theta,phi=DEF.phi,dist=DEF.dist,tx=0,tz=1.5,auto=true;
-function fitOffset(){/* 画面上でコントロールと下部ナビを除いた領域の中心に地図を置く（平行投影なのでlookAtのy移動で画面を縦にずらす） */
-  const c=document.getElementById('ctl'),cb=c?c.getBoundingClientRect().bottom:0,nav=document.getElementById('nav'),nb=(nav&&getComputedStyle(nav).display!=='none')?nav.getBoundingClientRect().top:innerHeight;
+let cbCollapsed=null;
+function fitOffset(){/* 条件パネルを閉じた状態の高さを基準に地図を置く（開閉で地図が動かないように） */
+  const c=document.getElementById('ctl');if(c.classList.contains('collapsed'))cbCollapsed=c.getBoundingClientRect().bottom;const cb=cbCollapsed!==null?cbCollapsed:(c?c.getBoundingClientRect().bottom:0),nav=document.getElementById('nav'),nb=(nav&&getComputedStyle(nav).display!=='none')?nav.getBoundingClientRect().top:innerHeight;
   const want=(cb+nb)/2,px=want-innerHeight/2,k=(dist*0.5*2)/innerHeight;return px*k/Math.max(0.2,Math.sin(phi))}
 let panX=0,panZ=0;
 const updCam=()=>{setFrustum();const D=80,cx=tx+panX,cz=tz+panZ;cam.position.set(cx+D*Math.sin(phi)*Math.sin(theta),D*Math.cos(phi),cz+D*Math.sin(phi)*Math.cos(theta));cam.lookAt(cx,0.5+fitOffset(),cz)};
@@ -533,7 +538,7 @@ const hitAt=(x,y)=>{v2.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCam
 function pick(x,y){const i=hitAt(x,y);select(i)}
 let hov=null;
 function hover(x,y){const i=hitAt(x,y);if(i===hov)return;hov=i;el.style.cursor=i===null?'grab':'pointer';meshes.forEach(m=>{m.userData.line.material.opacity=(state.sel===m.userData.i)?.95:(hov===m.userData.i?.7:.28)})}
-addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);updCam()});
+addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);cbCollapsed=null;if(!ctl.classList.contains('collapsed')){ctl.classList.add('collapsed');cbCollapsed=ctl.getBoundingClientRect().bottom;ctl.classList.remove('collapsed')}updCam()});
 if(window.ResizeObserver)new ResizeObserver(()=>updCam()).observe(document.getElementById('ctl'));
 addEventListener('keydown',e=>{if(!document.getElementById('page-map').classList.contains('show'))return;if(e.key==='ArrowLeft'){if(e.shiftKey)panBy(-30,0);else theta+=0.08;setAuto(false);updCam()}if(e.key==='ArrowRight'){if(e.shiftKey)panBy(30,0);else theta-=0.08;setAuto(false);updCam()}if(e.key==='ArrowUp'&&e.shiftKey){panBy(0,-30);updCam()}if(e.key==='ArrowDown'&&e.shiftKey){panBy(0,30);updCam()}if(e.key==='+'||e.key==='=')zoom(0.85);if(e.key==='-')zoom(1.18);if(e.key==='Escape')select(null)});
 const zoom=f=>{dist=Math.max(18,Math.min(90,dist*f));setAuto(false);updCam()};
@@ -583,7 +588,11 @@ const YEARS=[];for(let y=2025;y<=2040;y++)YEARS.push(String(y));
 function valueAt(ws,y,sc){const m=state.mode;const sum=f=>ws.reduce((s,w)=>s+f(w),0);
   let v;if(m==='disp')v=sum(w=>bandOf(w,y,state.time,sc));else if(m==='pop')v=sum(w=>popTot(w,y));else if(m==='elder')v=sum(w=>elderOf(w,y));else if(m==='aging')v=sum(w=>elderOf(w,y))/sum(w=>popTot(w,y))*100;else return null;
   if(isDiff()){let b;if(m==='disp')b=sum(w=>bandOf(w,'2025',state.time,sc));else if(m==='pop')b=sum(w=>popTot(w,'2025'));else b=sum(w=>elderOf(w,'2025'));v=(v/b-1)*100}return v}
-function drawMini(){
+const miniEl=document.getElementById('mini'),miniOpen=document.getElementById('miniOpen');
+function setMini(show){miniEl.hidden=!show;miniOpen.hidden=show;try{localStorage.setItem('yk2035-mini',show?'1':'0')}catch(e){}}
+document.getElementById('miniClose').onclick=()=>setMini(false);miniOpen.onclick=()=>{setMini(true);drawMini()};
+try{if(localStorage.getItem('yk2035-mini')==='0')setMini(false)}catch(e){}
+function drawMini(){if(miniEl.hidden)return;
   const ws=state.sel===null?W:[W[state.sel]],name=state.sel===null?'市全体':W[state.sel].name+'区';
   const T=document.getElementById('miniT'),S=document.getElementById('miniSvg');
   if(state.mode==='day'){T.textContent=`推移なし — 昼夜間比は2020年固定（${name}）`;S.innerHTML='';return}
@@ -609,7 +618,7 @@ function seg(id,attr,cb){const s=document.getElementById(id);s.querySelectorAll(
 const ctl=document.getElementById('ctl'),ctlT=document.getElementById('ctlToggle');
 function setCollapsed(v){ctl.classList.toggle('collapsed',v);ctlT.textContent=v?'条件を変える':'条件を閉じる';ctlT.setAttribute('aria-expanded',!v);requestAnimationFrame(updCam)}
 ctlT.onclick=()=>setCollapsed(!ctl.classList.contains('collapsed'));
-setCollapsed(innerHeight<760||innerWidth<700);
+ctl.classList.add('collapsed');cbCollapsed=ctl.getBoundingClientRect().bottom;setCollapsed(innerHeight<760||innerWidth<700);
 const yr=document.getElementById('yearRange'),yv=document.getElementById('yearV');
 function setYear(v){state.year=String(v);yr.value=v;yv.innerHTML=v==2025?'2025<small>基準＝2024年実績</small>':v+'<small>推計</small>';applyMetric()}
 yr.addEventListener('input',()=>setYear(+yr.value));
