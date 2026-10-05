@@ -1,4 +1,4 @@
-# 横浜市 救急需要の未来地図 2025→2035（v3）
+# 横浜市 救急需要の未来地図 2025→2035（v4）
 
 公開: https://ajp-4dev.github.io/yokohama-ems-2035/ （GitHub Pages・公開リポ AJP-4dev/yokohama-ems-2035）
 Artifact版: https://claude.ai/artifact/Q5u7dTpGuNHD7BEVfKN5pa
@@ -21,6 +21,15 @@ Artifact版: https://claude.ai/artifact/Q5u7dTpGuNHD7BEVfKN5pa
 
 再生成: `.venv/bin/python src/build_model.py && .venv/bin/python src/build_html.py`
 （venv: `python3 -m venv .venv && .venv/bin/pip install openpyxl pymupdf pypdf`）
+
+## v4 で変わったこと（2026-10-05・条件の見える化）
+- 条件パネル: 年スライダー(2025〜2040)・前提A/B・時間帯(終日/昼8–19時/夜20–7時)・指標。**結果に効かない条件は薄くなり「影響なし」タグ**
+- 「いま見ているもの」ステータス行: 何年の・どの時間帯の・何を・どう計算した数字かを1文で常時表示
+- 時間帯レイヤー: 市全体の時間帯別実績（昼65%）で年間件数を昼夜に分け、昼間補正は昼側へ。**夜は画面全体がダークテーマ、昼は暖色**
+- 3Dは平行投影、柱の高さは色と同じ指標。増減率の色範囲はBシナリオで自動拡大
+- 救急隊: 年報p.105「救急隊別活動状況」から区別の隊数（24h隊79＋日勤6＋年途中設置2＝87隊、2024年末）を集計。シートに「1隊あたり件数」「3,000件/隊を超える年」、一覧表に列追加、スライドに1枚追加
+- URLハッシュで状態共有（例: `#y=2035&s=A&m=disp&t=night&w=13`）
+- 旧テンプレは src/template_v3_backup.html
 
 ## v3 で変わったこと（2026-10-05・デザイン刷新）
 - ライトテーマ（紺×救急レッド、Zen Kaku Gothic New＋Manrope）。5ページ構成＝地図／市全体／考察／方法／スライド（スマホは下部タブ、PCは上部タブ）

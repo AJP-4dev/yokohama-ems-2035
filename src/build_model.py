@@ -39,6 +39,18 @@ TRANSFER_WARD = {'鶴見': 799, '神奈川': 836, '西': 387, '中': 858, '南':
                  '旭': 758, '磯子': 497, '金沢': 754, '港北': 940, '緑': 511, '青葉': 830, '都筑': 329,
                  '戸塚': 1499, '栄': 187, '泉': 591, '瀬谷': 201}
 EMS_UNITS = 85.5  # 令和6年中の隊数（うち6隊が日勤救急隊）p.98 注2
+# 救急隊別活動状況（p.105）から数えた区別の隊数（2024年末時点）。[24時間隊, 日勤救急隊]
+# 日勤隊＝出場1,200〜1,360件の隊（鶴見第2・西第3・港北第2・緑第2・戸塚第2・瀬谷第2）。
+# 山下町第2・綱島は年途中（3か月）設置のため年報では0.25隊だが、年末時点では1隊として数える。
+UNITS_WARD = {'鶴見': [6, 1], '神奈川': [5, 0], '西': [4, 1], '中': [6, 0], '南': [5, 0], '港南': [5, 0],
+              '保土ケ谷': [4, 0], '旭': [5, 0], '磯子': [3, 0], '金沢': [5, 0], '港北': [6, 1], '緑': [4, 1],
+              '青葉': [5, 0], '都筑': [4, 0], '戸塚': [4, 1], '栄': [3, 0], '泉': [4, 0], '瀬谷': [3, 1]}
+# 時間帯別出場件数（p.102）0時台〜23時台
+HOURLY = [6969, 5933, 5166, 4790, 4814, 5700, 7045, 9495, 12168, 14924, 15729, 14799,
+          14564, 13922, 13494, 13282, 13440, 13856, 13351, 12944, 11732, 10762, 9463, 8139]
+DAY_HOURS = list(range(8, 20))  # 昼＝8〜19時台
+assert sum(HOURLY) == DISPATCH_TOTAL, sum(HOURLY)
+DAY_SHARE = sum(HOURLY[h] for h in DAY_HOURS) / DISPATCH_TOTAL
 DAYF = 0.35       # 通勤通学者の区内滞在時間割合（8.5h/24h）
 assert sum(TRANSPORT_5Y.values()) == TRANSPORT_TOTAL
 assert sum(DISPATCH_WARD.values()) + 50 == DISPATCH_TOTAL
@@ -120,7 +132,7 @@ for w, disp24 in DISPATCH_WARD.items():
     wards.append({'name': w, 'code': bi['code'], 'pop': pop, 'disp': disp, 'byAge': by_age,
                   'disp24': disp24, 'transfer24': TRANSFER_WARD[w], 'fac': round(fac, 3),
                   'dn': bi['dn'], 'day20': bi['day20'], 'night20': bi['night20'], 'in': bi['in'], 'out': bi['out'],
-                  'dayExtra': round(day_extra_tr * DR * fac)})
+                  'dayExtra': round(day_extra_tr * DR * fac), 'units': UNITS_WARD[w][0], 'unitsDay': UNITS_WARD[w][1]})
 
 city = {y: {g: sum(wd['pop'][y][g] for wd in wards) for g in GROUPS} for y in YEARS}
 for y in YEARS: city[y]['t'] = sum(city[y][g] for g in GROUPS)
@@ -131,7 +143,7 @@ model = {
     'rates': {g: round(v, 5) for g, v in rate_group.items()},
     'rates5y': {a: round(v, 5) for a, v in RATE.items()},
     'transport5y': TRANSPORT_5Y, 'dispatchTotal': DISPATCH_TOTAL, 'transportTotal': TRANSPORT_TOTAL,
-    'dispRatio': round(DR, 4), 'dayf': DAYF, 'emsUnits': EMS_UNITS,
+    'dispRatio': round(DR, 4), 'dayf': DAYF, 'emsUnits': EMS_UNITS, 'hourly': HOURLY, 'dayShare': round(DAY_SHARE, 4), 'dayHours': [8, 19],
     'series': B['series'],
 }
 json.dump(model, open(HERE / 'model.json', 'w'), ensure_ascii=False)
@@ -145,12 +157,13 @@ for wd in wards:
     d['c'] = geo[wd['name']]['c']; d['rings'] = geo[wd['name']]['rings']
     dw.append(d)
 DATA = {'wards': dw, 'rates': model['rates'], 'dispRatio': model['dispRatio'], 'dayf': DAYF,
-        'city': {str(y): v for y, v in city.items()}, 'series': B['series'], 'emsUnits': EMS_UNITS}
+        'city': {str(y): v for y, v in city.items()}, 'series': B['series'], 'emsUnits': EMS_UNITS,
+        'hourly': HOURLY, 'dayShare': round(DAY_SHARE, 4), 'dayHours': [8, 19]}
 open(HERE.parent / 'data.js', 'w').write('const DATA=' + json.dumps(DATA, ensure_ascii=False, separators=(',', ':')) + ';\n')
 
 # ---- サマリー -----------------------------------------------------------------
 tot = lambda y: sum(wd['disp'][y] for wd in wards)
-print(f'出場/搬送比 {DR:.4f}  15–64平均搬送率 {RATE_W*100:.2f}%')
+print(f'出場/搬送比 {DR:.4f}  15–64平均搬送率 {RATE_W*100:.2f}%  昼(8-19時)シェア {DAY_SHARE*100:.1f}%  隊数 {sum(a+b for a,b in UNITS_WARD.values())}（日勤{sum(b for a,b in UNITS_WARD.values())}）')
 print('搬送率(5区分):', {g: f'{v*100:.2f}%' for g, v in rate_group.items()})
 print('市人口(実績ベース)', {y: city[y] for y in (2025, 2030, 2035, 2040)})
 for y in (2025, 2030, 2035, 2040):
