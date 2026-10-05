@@ -120,11 +120,18 @@ th{color:var(--ink2);font-weight:500;font-size:11px;position:sticky;top:0;backgr
 .yr input[type=range]{flex:1;min-width:0;accent-color:var(--red);height:28px;margin:0}
 .yrv{font-size:14px;font-weight:800;width:150px;text-align:left;white-space:nowrap}
 .yrv small{display:block;font-size:10.5px;color:var(--ink2);font-weight:400}
-#status{pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 10px;max-width:560px}
+#status{pointer-events:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 10px;max-width:560px;display:flex;gap:10px;align-items:flex-start;box-shadow:0 2px 12px rgba(20,33,61,.07)}
+#status .txt{flex:1;min-width:0}
+#ctlToggle{flex:none;border:1px solid var(--line);background:var(--surface2);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;color:var(--ink)}
+#ctl.collapsed .panel{display:none}
+#ctl.collapsed #status .s2{display:none}
+#ctl.collapsed #total .u{display:none}
+#ctl.collapsed #total .v{font-size:26px}
 #status .s1{font-size:13px;font-weight:700;line-height:1.45}
 #status .s2{font-size:11.5px;color:var(--ink2);line-height:1.45;margin-top:2px}
 #hint{pointer-events:none;font-size:12px;color:var(--ink2);background:rgba(255,255,255,.8);display:inline-block;padding:5px 10px;border-radius:8px;max-width:100%;line-height:1.5}
-#total{pointer-events:none;line-height:1.1;margin:2px 0 0 2px}
+#total{pointer-events:none;line-height:1.1;margin:2px 0 0 2px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+#total .u{width:100%}
 #total .v{font-size:36px;font-weight:800;color:var(--navy)}
 #total .u{font-size:11px;color:var(--ink2);margin-top:2px}
 #total .d{font-size:13px;margin-top:5px;font-weight:700}
@@ -249,10 +256,11 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
       <div class="prow" id="rowTime"><span class="lbl">時間帯</span><div class="seg" id="timeSeg"><button aria-pressed="true" data-t="all">終日</button><button aria-pressed="false" data-t="day">昼 8–19時</button><button aria-pressed="false" data-t="night">夜 20–7時</button></div><span class="tag">影響なし</span></div>
       <div class="prow" id="rowMode"><span class="lbl">指標</span><div class="seg" id="modeSeg"><button aria-pressed="true" data-m="disp">出場件数</button><button aria-pressed="false" data-m="diff">増減率</button><button aria-pressed="false" data-m="aging">高齢化率</button><button aria-pressed="false" data-m="day">昼夜間比</button></div></div>
     </div>
-    <div id="status"><div class="s1" id="stL1"></div><div class="s2" id="stL2"></div></div>
+    <div id="status"><div class="txt"><div class="s1" id="stL1"></div><div class="s2" id="stL2"></div></div><button id="ctlToggle" aria-expanded="true">条件を閉じる</button></div>
     <div id="total"><div class="v num" id="totV">—</div><div class="u" id="totU">市全体の救急出場件数（件/年）</div><div class="d num" id="totD"></div></div>
   </div>
   <div id="tools">
+    <button id="pan" aria-label="移動モード（1本指で地図を動かす）" aria-pressed="false" title="移動"><svg viewBox="0 0 24 24"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg></button>
     <button id="zin" aria-label="拡大"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
     <button id="zout" aria-label="縮小"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
     <button id="reset" aria-label="視点をリセット"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
@@ -379,7 +387,7 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
     <h2>このサイトの見方</h2>
     <p class="m">横浜市18区の救急出場件数が2035年までにどう変わるかを、市の人口推計から推計したレポートです。</p>
     <div class="steps">
-      <div><b>1</b><span><strong>地図</strong>で全体像をつかむ。柱の高さと色＝選んだ指標。年はスライダーで動かせます。薄くなった条件は、いまの表示に影響しません。</span></div>
+      <div><b>1</b><span><strong>地図</strong>で全体像をつかむ。柱の高さと色＝選んだ指標。年はスライダーで動かせます。薄くなった条件は、いまの表示に影響しません。地図は1本指で回転、2本指で移動と拡大（PCは右ドラッグで移動）。</span></div>
       <div><b>2</b><span><strong>市全体</strong>と<strong>考察</strong>で、なぜ増えるのか・どこで増えるのかを読む。</span></div>
       <div><b>3</b><span><strong>方法</strong>で計算の手順と出典を確認。<strong>スライド</strong>は会議でそのまま使える要約です。</span></div>
     </div>
@@ -487,19 +495,25 @@ function setLabel(spr,text,sub,hot){const c=spr.userData.canvas,s=2,g=c.getConte
 const portrait=()=>innerWidth/innerHeight<0.8;
 const DEF={theta:-0.35,phi:0.95,dist:(portrait()?52:34)};
 let theta=DEF.theta,phi=DEF.phi,dist=DEF.dist,tx=0,tz=1.5,auto=true;
-const updCam=()=>{setFrustum();const D=80;cam.position.set(tx+D*Math.sin(phi)*Math.sin(theta),D*Math.cos(phi),tz+D*Math.sin(phi)*Math.cos(theta));cam.lookAt(tx,portrait()?12:4,tz)};
-const ptr=new Map(); let lastD=0,moved=false,downT=0;
+function fitOffset(){/* 画面上でコントロールと下部ナビを除いた領域の中心に地図を置く（平行投影なのでlookAtのy移動で画面を縦にずらす） */
+  const c=document.getElementById('ctl'),cb=c?c.getBoundingClientRect().bottom:0,nav=document.getElementById('nav'),nb=(nav&&getComputedStyle(nav).display!=='none')?nav.getBoundingClientRect().top:innerHeight;
+  const want=(cb+nb)/2,px=want-innerHeight/2,k=(dist*0.5*2)/innerHeight;return px*k/Math.max(0.2,Math.sin(phi))}
+let panX=0,panZ=0;
+const updCam=()=>{setFrustum();const D=80,cx=tx+panX,cz=tz+panZ;cam.position.set(cx+D*Math.sin(phi)*Math.sin(theta),D*Math.cos(phi),cz+D*Math.sin(phi)*Math.cos(theta));cam.lookAt(cx,0.5+fitOffset(),cz)};
+function panBy(dx,dy){const k=(dist*0.5*2)/innerHeight;const rx=Math.cos(theta),rz=-Math.sin(theta),fx=-Math.sin(theta),fz=-Math.cos(theta);panX+=-dx*k*rx+dy*k/Math.max(0.3,Math.cos(phi))*fx;panZ+=-dx*k*rz+dy*k/Math.max(0.3,Math.cos(phi))*fz}
+const ptr=new Map(); let lastD=0,moved=false,downT=0,lastC=null,panMode=false;
 const el=renderer.domElement;
-el.addEventListener('pointerdown',e=>{ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});moved=false;downT=Date.now();setAuto(false);el.setPointerCapture(e.pointerId)});
+el.addEventListener('pointerdown',e=>{ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});moved=false;downT=Date.now();setAuto(false);try{el.setPointerCapture(e.pointerId)}catch(err){}lastC=null});
+el.addEventListener('contextmenu',e=>e.preventDefault());
 el.addEventListener('pointermove',e=>{
   if(!ptr.has(e.pointerId)){if(e.pointerType==='mouse')hover(e.clientX,e.clientY);return}
   const p=ptr.get(e.pointerId);
-  if(ptr.size===1){const dx=e.clientX-p.x,dy=e.clientY-p.y;if(Math.abs(dx)+Math.abs(dy)>3)moved=true;theta-=dx*0.006;phi=Math.max(0.25,Math.min(1.35,phi-dy*0.005))}
+  if(ptr.size===1){const dx=e.clientX-p.x,dy=e.clientY-p.y;if(Math.abs(dx)+Math.abs(dy)>3)moved=true;const doPan=panMode||e.buttons===2||e.buttons===4||e.shiftKey;if(doPan)panBy(dx,dy);else{theta-=dx*0.006;phi=Math.max(0.25,Math.min(1.35,phi-dy*0.005))}}
   ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(ptr.size===2){const a=[...ptr.values()];const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(lastD)dist=Math.max(18,Math.min(90,dist*(lastD/d)));lastD=d;moved=true}
+  if(ptr.size===2){const a=[...ptr.values()];const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(lastD)dist=Math.max(18,Math.min(90,dist*(lastD/d)));lastD=d;const c={x:(a[0].x+a[1].x)/2,y:(a[0].y+a[1].y)/2};if(lastC)panBy(c.x-lastC.x,c.y-lastC.y);lastC=c;moved=true}
   updCam();
 });
-const up=e=>{ptr.delete(e.pointerId);if(ptr.size<2)lastD=0;if(!moved&&Date.now()-downT<500)pick(e.clientX,e.clientY)};
+const up=e=>{ptr.delete(e.pointerId);if(ptr.size<2){lastD=0;lastC=null}if(!moved&&Date.now()-downT<500&&e.button===0)pick(e.clientX,e.clientY)};
 el.addEventListener('pointerup',up); el.addEventListener('pointercancel',e=>ptr.delete(e.pointerId));
 el.addEventListener('wheel',e=>{e.preventDefault();dist=Math.max(18,Math.min(90,dist*(1+e.deltaY*0.001)));setAuto(false);updCam()},{passive:false});
 const ray=new THREE.Raycaster(),v2=new THREE.Vector2();
@@ -508,10 +522,12 @@ function pick(x,y){const i=hitAt(x,y);select(i)}
 let hov=null;
 function hover(x,y){const i=hitAt(x,y);if(i===hov)return;hov=i;el.style.cursor=i===null?'grab':'pointer';meshes.forEach(m=>{m.userData.line.material.opacity=(state.sel===m.userData.i)?.95:(hov===m.userData.i?.7:.28)})}
 addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);updCam()});
-addEventListener('keydown',e=>{if(!document.getElementById('page-map').classList.contains('show'))return;if(e.key==='ArrowLeft'){theta+=0.08;setAuto(false);updCam()}if(e.key==='ArrowRight'){theta-=0.08;setAuto(false);updCam()}if(e.key==='+'||e.key==='=')zoom(0.85);if(e.key==='-')zoom(1.18);if(e.key==='Escape')select(null)});
+if(window.ResizeObserver)new ResizeObserver(()=>updCam()).observe(document.getElementById('ctl'));
+addEventListener('keydown',e=>{if(!document.getElementById('page-map').classList.contains('show'))return;if(e.key==='ArrowLeft'){if(e.shiftKey)panBy(-30,0);else theta+=0.08;setAuto(false);updCam()}if(e.key==='ArrowRight'){if(e.shiftKey)panBy(30,0);else theta-=0.08;setAuto(false);updCam()}if(e.key==='ArrowUp'&&e.shiftKey){panBy(0,-30);updCam()}if(e.key==='ArrowDown'&&e.shiftKey){panBy(0,30);updCam()}if(e.key==='+'||e.key==='=')zoom(0.85);if(e.key==='-')zoom(1.18);if(e.key==='Escape')select(null)});
 const zoom=f=>{dist=Math.max(18,Math.min(90,dist*f));setAuto(false);updCam()};
 document.getElementById('zin').onclick=()=>zoom(0.8); document.getElementById('zout').onclick=()=>zoom(1.25);
-document.getElementById('reset').onclick=()=>{theta=DEF.theta;phi=DEF.phi;dist=DEF.dist;setAuto(true);updCam()};
+document.getElementById('reset').onclick=()=>{theta=DEF.theta;phi=DEF.phi;dist=DEF.dist;panX=0;panZ=0;setAuto(true);updCam()};
+const panBtn=document.getElementById('pan');panBtn.onclick=()=>{panMode=!panMode;panBtn.setAttribute('aria-pressed',panMode);el.style.cursor=panMode?'move':'grab'};
 const spinBtn=document.getElementById('spin'); spinBtn.onclick=()=>setAuto(!auto);
 function setAuto(v){auto=v;spinBtn.setAttribute('aria-pressed',v)}
 
@@ -547,6 +563,10 @@ function applyMetric(){
   if(state.sel!==null)fillSheet(W[state.sel]);
 }
 function seg(id,attr,cb){const s=document.getElementById(id);s.querySelectorAll('button').forEach(b=>b.onclick=()=>{s.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');cb(b.dataset[attr])})}
+const ctl=document.getElementById('ctl'),ctlT=document.getElementById('ctlToggle');
+function setCollapsed(v){ctl.classList.toggle('collapsed',v);ctlT.textContent=v?'条件を変える':'条件を閉じる';ctlT.setAttribute('aria-expanded',!v);requestAnimationFrame(updCam)}
+ctlT.onclick=()=>setCollapsed(!ctl.classList.contains('collapsed'));
+setCollapsed(innerHeight<760||innerWidth<700);
 const yr=document.getElementById('yearRange'),yv=document.getElementById('yearV');
 function setYear(v){state.year=String(v);yr.value=v;yv.innerHTML=v==2025?'2025<small>基準＝2024年実績</small>':v+'<small>推計</small>';applyMetric()}
 yr.addEventListener('input',()=>setYear(+yr.value));
