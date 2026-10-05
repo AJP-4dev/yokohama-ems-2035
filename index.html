@@ -92,6 +92,7 @@ th{color:var(--ink2);font-weight:500;font-size:11px;position:sticky;top:0;backgr
 .seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px;box-shadow:0 2px 10px rgba(20,33,61,.06)}
 .seg button{border:0;background:none;color:var(--ink2);font-size:12.5px;padding:7px 11px;border-radius:8px;cursor:pointer;white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--navy);color:#fff;font-weight:700}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
 .seg.alt button[aria-pressed="true"]{background:var(--red);color:#fff}
 .seglbl{font-size:11px;color:var(--ink2);margin:0 4px 0 2px}
 .grp{display:inline-flex;align-items:center}
@@ -477,7 +478,7 @@ const spinBtn=document.getElementById('spin'); spinBtn.onclick=()=>setAuto(!auto
 function setAuto(v){auto=v;spinBtn.setAttribute('aria-pressed',v)}
 
 /* ---------- apply ---------- */
-const HINT={disp:'高さと色＝年間の救急出場件数（件/年）',diff:'高さと色＝2024年実績からの増減率（2024を選ぶと全区が基準で同じ高さ）',aging:'高さと色＝65歳以上の割合',day:'高さと色＝昼間人口÷夜間人口×100（2020年）。100より大きいと昼に人が集まる区'};
+const HINT={disp:'高さと色＝年間の救急出場件数（件/年）',diff:'高さと色＝2024年実績からの増減率（2024を選ぶと全区が基準で同じ高さ）',aging:'高さと色＝65歳以上の割合',day:'高さと色＝昼間人口÷夜間人口×100。2020年国勢調査の値で全年共通（将来推計なし）'};
 const LEG={disp:['出場件数（件/年）','7,000','23,000'],diff:['2024年比の増減率','−5%','+15%'],aging:['65歳以上の割合','18%','38%'],day:['昼夜間人口比率','70','220']};
 function applyMetric(){
   const y=state.year;
@@ -490,7 +491,8 @@ function applyMetric(){
   const L=LEG[state.mode];document.getElementById('legT').textContent=L[0];document.getElementById('legLo').textContent=L[1];document.getElementById('legHi').textContent=L[2];
   document.getElementById('legBar').style.background=`linear-gradient(90deg,${RAMPS[state.mode].join(',')})`;
   document.getElementById('legH').textContent='高さも同じ指標（平行投影で比較可）';
-  document.getElementById('hint').textContent=HINT[state.mode]+(y==='2025'?'':state.sc==='B'?'　／ '+y+'年・利用率上昇込み':'　／ '+y+'年・人口の変化だけ');
+  document.getElementById('hint').textContent=HINT[state.mode]+(state.mode==='day'||y==='2025'?'':state.sc==='B'?'　／ '+y+'年・利用率上昇込み':'　／ '+y+'年・人口の変化だけ');
+  document.querySelectorAll('#yearSeg button,#scSeg button').forEach(b=>b.disabled=(state.mode==='day'));
   if(state.sel!==null)fillSheet(W[state.sel]);
 }
 function seg(id,attr,cb){const s=document.getElementById(id);s.querySelectorAll('button').forEach(b=>b.onclick=()=>{s.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');cb(b.dataset[attr])})}
