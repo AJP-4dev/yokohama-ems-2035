@@ -214,7 +214,8 @@ DATA = {'wards': dw, 'rates': model['rates'], 'dispRatio': model['dispRatio'], '
         'cityArrive': round(sum(r[2]*r[4] for r in UNIT_ROWS)/sum(r[2] for r in UNIT_ROWS),2), 'cityNonTr': round(1-TRANSPORT_TOTAL/DISPATCH_TOTAL,4),
         'trend': TREND and {'years': TREND['years'], 'rateGroup': TREND['rateGroup'], 'stdRate': TREND['stdRate'], 'allRate': TREND['allRate'],
                             'growthGroup': TREND['growthGroup'], 'growthStd': TREND['growthStd'], 'growthAll': TREND['growthAll'],
-                            'growthPre': TREND['growthGroupPre2019'], 'growthPost': TREND['growthGroup2022_24'], 'fitYears': TREND['fitYears']}}
+                            'growthPre': TREND['growthGroupPre2019'], 'growthPost': TREND['growthGroup2022_24'], 'fitYears': TREND['fitYears'],
+                            'transport': TREND['transport'], 'dispatch': TREND['dispatch']}}
 open(HERE.parent / 'data.js', 'w').write('const DATA=' + json.dumps(DATA, ensure_ascii=False, separators=(',', ':')) + ';\n')
 
 # ---- サマリー -----------------------------------------------------------------
