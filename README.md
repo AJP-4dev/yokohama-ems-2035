@@ -22,6 +22,12 @@ Artifact版: https://claude.ai/artifact/Q5u7dTpGuNHD7BEVfKN5pa
 再生成: `.venv/bin/python src/build_model.py && .venv/bin/python src/build_html.py`
 （venv: `python3 -m venv .venv && .venv/bin/pip install openpyxl pymupdf pypdf`）
 
+## v7 動画タブ（2026-10-06）
+- 「動画」タブ（スライドの隣）: media/yokohama-ems-2035.mp4（7分14秒・1080p・無音・28MB）＋章リンク（クリックでその秒へ）。Artifact版でも再生できるよう src は GitHub Pages の絶対URL
+- 制作: video/（SPEC.md＝仕様、CONTRACT.md＝章ファイルの契約、src/scene.html＋lib.js＋chapters/ch00〜10.js、scripts/render.mjs で決定論レンダ）。再レンダ `cd video && node scripts/render.mjs`（約27分）。部分レンダ `--start F --end F`、静止画 `--frames`
+- 骨格の QPAD/CPAD（0.8s）で問い/結論カードに読む間を足している。章の尺は scene.html の BASE と各章の duration を一致させる
+- ユーザーの修正指示（反映済み）: 冒頭8秒・カウンター削除／切替に一拍／第9章は一斉点灯＋点を置く
+
 ## v6.2 表記・シナリオ名・補足グラフ・整合（2026-10-06）
 - 表記: 「1,000人あたり」→「出場件数/千人」、「件/km²」→「出場件数/km²」。指標ボタンの順を 人口→高齢者人口→高齢化率→昼夜間比→出場件数→出場件数/千人→出場件数/km²→不搬送率→到着時間 に
 - 「前提」→「シナリオ」、名称を 人口変化のみ／緩やかな利用増／利用増が続く／年代別トレンド に（JS SCN、URLの s=A|M|B|T は不変）

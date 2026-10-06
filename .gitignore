@@ -3,3 +3,6 @@ out/
 src/*.pdf
 src/*.xlsx
 .playwright-mcp/
+video/node_modules/
+video/out/
+video/src/reference/

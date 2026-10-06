@@ -532,6 +532,16 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
   </div>
 </div></div></section>
 
+<!-- ================= VIDEO ================= -->
+<section class="page" id="page-video"><div class="scroll"><div class="wrap">
+  <h2>動画で見る — 7分で分かる要点</h2>
+  <p class="lead">何をして、何が分かったかを7分の無音動画にまとめました。字幕と注釈だけで読めます。会議の冒頭や事前共有にどうぞ。</p>
+  <div class="card" style="padding:0;overflow:hidden"><video id="mainVideo" controls playsinline preload="metadata" poster="https://ajp-4dev.github.io/yokohama-ems-2035/media/poster.jpg" style="width:100%;display:block;background:#000"><source src="https://ajp-4dev.github.io/yokohama-ems-2035/media/yokohama-ems-2035.mp4" type="video/mp4">お使いのブラウザは動画を再生できません。<a href="https://ajp-4dev.github.io/yokohama-ems-2035/media/yokohama-ems-2035.mp4">ファイルを開く</a></video></div>
+  <div class="card"><h4>章立て</h4><ol id="videoChapters" style="padding-left:20px;margin:6px 0"></ol><p class="m">時間を押すとその章から再生します。</p></div>
+  <p class="m">音声はありません。字幕は画面下、補足は画面内の注釈です。動画の数値はこのサイトと同じデータから描いています。</p>
+  <button class="next" data-go="map">地図に戻る<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+</div></div></section>
+
 <!-- ================= INTRO ================= -->
 <div id="intro" role="dialog" aria-label="このサイトの見方">
   <div class="box">
@@ -585,7 +595,7 @@ const cityPop=(y,a)=>W.reduce((s,w)=>s+(a?w.pop[y][a]:popTot(w,y)),0);
 const T35=W.reduce((s,w)=>s+annualT(w,'2035'),0), T30=W.reduce((s,w)=>s+annualT(w,'2030'),0), T40=W.reduce((s,w)=>s+annualT(w,'2040'),0), B35=W.reduce((s,w)=>s+w.disp['2035']*Math.pow(1.015,11),0), M35=W.reduce((s,w)=>s+w.disp['2035']*Math.pow(1.0075,11),0), M30=W.reduce((s,w)=>s+w.disp['2030']*Math.pow(1.0075,6),0), M40=W.reduce((s,w)=>s+w.disp['2040']*Math.pow(1.0075,16),0), A35=W.reduce((s,w)=>s+w.disp['2035'],0), A30=W.reduce((s,w)=>s+w.disp['2030'],0), A40=W.reduce((s,w)=>s+w.disp['2040'],0), T24=256481;
 
 /* ---------- navigation ---------- */
-const PAGES=[['map','地図','<path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 7v13M15 4v13"/>'],['city','市全体','<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],['wards','区別','<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/>'],['insight','考察','<path d="M12 3a7 7 0 0 0-4 12.7V18h8v-2.3A7 7 0 0 0 12 3z"/><path d="M9 21h6"/>'],['method','方法','<path d="M4 6h16M4 12h10M4 18h16"/><circle cx="18" cy="12" r="2"/>'],['slides','スライド','<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/>']];
+const PAGES=[['map','地図','<path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3z"/><path d="M9 7v13M15 4v13"/>'],['city','市全体','<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],['wards','区別','<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/>'],['insight','考察','<path d="M12 3a7 7 0 0 0-4 12.7V18h8v-2.3A7 7 0 0 0 12 3z"/><path d="M9 21h6"/>'],['method','方法','<path d="M4 6h16M4 12h10M4 18h16"/><circle cx="18" cy="12" r="2"/>'],['slides','スライド','<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/>'],['video','動画','<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/>']];
 const nav=document.getElementById('nav'), hdt=document.querySelector('.hdtabs');
 PAGES.forEach(([id,lab,ico],i)=>{
   nav.insertAdjacentHTML('beforeend',`<button role="tab" data-page="${id}" aria-selected="${i===0}"><svg viewBox="0 0 24 24">${ico}</svg>${lab}</button>`);
@@ -1064,7 +1074,7 @@ function buildWards(){
   document.getElementById('wardCards').innerHTML=W.map((w,i)=>{const t=wardType(w),[tn,tc]=TYPES[t];return `<div class="wcard" id="wc-${i}"><h3>${w.name}区 <span class="typ" style="background:${tc}">${tn}</span><span class="m">人口 ${man(popTot(w,'2025'))}人・出場 ${fmt(w.disp24)}件・${unitsOf(w)}隊</span></h3>${profHTML(wardMetrics(w))}<ul>${wardText(w).map(t=>`<li>${t}</li>`).join('')}</ul><p style="margin:10px 0 0"><a class="mapgo" href="#" data-state="m=disp&y=2035&w=${w.name}">2035年を地図で</a> <a class="mapgo" href="#" data-state="m=nontr&w=${w.name}">不搬送率を地図で</a> <a class="mapgo" href="#" data-state="m=arrive&w=${w.name}">到着時間を地図で</a></p></div>`}).join('');
   bindMapLinks(document.getElementById('page-wards'));
 }
-buildWards();buildSupp();
+buildWards();buildSupp();(function(){const ch=[[0,'冒頭 — タイトル'],[8,'問い — 人口が減れば、救急も減る？'],[29,'データの出どころ — 5つの公開資料'],[58,'どう計算したか — 5つのステップ'],[124,'結果① 市全体 — 2035年の出場件数'],[171,'結果② 誰が — 85歳以上'],[218,'結果③ どこで — 3D地図で見る北部'],[286,'結果④ 密度・到着・不搬送'],[337,'意外だったこと — 増えているのは高齢者の利用ではない'],[381,'隊の負担 — 3,000件を超える年'],[402,'示唆と案内']];const v=document.getElementById('mainVideo'),ol=document.getElementById('videoChapters');if(!ol)return;ol.innerHTML=ch.map(c=>`<li><a href="#" data-t="${c[0]}">${Math.floor(c[0]/60)}:${String(c[0]%60).padStart(2,'0')}</a>　${c[1]}</li>`).join('');ol.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();v.currentTime=+a.dataset.t;v.play()})})();
 
 /* ---------- slides ---------- */
 const pt=(n,l,r)=>`<div class="pt"><div class="n${r?' r':''} num">${n}</div><p>${l}</p></div>`;
