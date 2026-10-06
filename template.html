@@ -363,7 +363,7 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
 <!-- ================= INSIGHT ================= -->
 <section class="page" id="page-insight"><div class="scroll"><div class="wrap">
   <h2>考察 — 数字が語ること</h2>
-  <p class="lead">3つの結論。人口は減っても出場は増える、主役は85歳以上、需要の重心は北部へ。6以降は隊の負担・2040年・密度と到着時間・不搬送・2025年の断面・搬送率の推移・補足グラフ・施策です。各項目の「地図で」ボタンで、その条件の地図に飛べます。</p>
+  <p class="lead">3つの結論。人口は減っても出場は増える、主役は85歳以上、需要の重心は北部へ。6以降は隊の負担・2040年・密度と到着時間・不搬送・2025年の断面・生活保護率との相関・搬送率の推移・補足グラフ・施策です。各項目の「地図で」ボタンで、その条件の地図に飛べます。</p>
   <h3>1. 人口が減っても救急需要は増える</h3>
   <p>市人口は2025→2035年で約2.3%減ります（376.9万→368.2万人）が、年齢構成の変化だけで出場件数は約7.8%増の27.6万件に達します。搬送率（1人あたりの救急車利用）の上昇傾向が続けば、2035年は「緩やかな利用増」シナリオで約29.9万件、「利用増が続く」シナリオで約32.6万件です。</p>
   <div class="callout">救急隊数を2024年の85.5隊のままとすると、1隊あたりの年間出場件数は3,000件から約3,230件（人口変化のみ）〜3,810件（利用増が続く）に増えます。</div>
@@ -421,12 +421,16 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
   <div class="card"><h4>栄・瀬谷・泉・金沢・旭 — 高齢化率は高いが出場件数/千人は市平均並み</h4><p class="m"><b>根拠</b>：高齢化率29〜31%で市内上位なのに、出場件数/千人は68〜73件。年齢補正後は0.89〜1.03で「期待どおり」。不搬送率は13〜17%と低い。<br><b>仮説</b>：1960〜70年代開発の郊外住宅地で、住民以外の需要（来街者・転院・繁華街）がほとんどない。出場はほぼ住民の実需で、年齢構成どおりに決まる。85歳以上の増加率は30〜45%と都筑・青葉より小さく、人口減少と相殺して件数は横ばい。ただし到着は9分超で、1隊あたり6km²前後。</p></div>
   <div class="card"><h4>鶴見・神奈川 — 比例線どおりだが、昼の需要構成が違う</h4><p class="m"><b>根拠</b>：出場件数/千人64・63件で市平均並み、年齢補正後1.07・1.01。不搬送率は神奈川21%とやや高い。鶴見は交通事故852件で市内最多、神奈川は医師搬送99件。<br><b>仮説</b>：臨海部の工業地帯と幹線道路（国道15号・産業道路）による交通事故・労災と、住宅地の高齢者需要が混在する。昼間流出も小さく（昼夜間比85・97）、需要が一日を通して平準化している区。</p></div>
   <p><a class="mapgo" href="#" data-state="m=percap">出場件数/千人を地図で</a> <a class="mapgo" href="#" data-state="m=density">出場密度を地図で</a> <a class="mapgo" href="#" data-state="m=aging">高齢化率を地図で</a></p>
-  <h3>11. 搬送率はどう動いてきたか — 増えているのは高齢者の利用ではない</h3>
+  <h3>11. 年齢で説明できない差は何か — 生活保護率との相関</h3>
+  <p>校正係数（年齢構成と昼間人口で説明できない残差）を、区の生活保護率（被保護人員 ÷ 人口、令和6年4月）と外国人住民比率（令和7年1月1日）に並べました。</p>
+  <div class="card"><h4>生活保護率と校正係数</h4><svg class="chart" id="anE" viewBox="0 0 600 380"></svg><p class="m">横軸＝生活保護率、縦軸＝校正係数（1.0＝人口から期待される件数どおり）。点線＝中・西を除く16区の回帰線。相関は18区で <span class="num" id="anEr"></span>、16区で <span class="num" id="anEr2"></span>。外国人比率との相関は <span class="num" id="anEr3"></span>（18区）。</p><div class="ins">年齢で説明できない救急需要の差は、生活保護率とかなり強く連動する。南区（保護率3.72%、市内2位）は回帰線に乗せると残差+0.05で、「年齢で説明できない2割」の4分の3が経済状況で説明できる。港南区の残差+0.07は転院搬送（7.0%）の分。例外は瀬谷区（保護率3.33%なのに校正係数1.01）で、団地中心で高齢化が進み、施設や家族の見守りが効いている可能性がある。青葉区は保護率0.81%で線よりさらに低く、所得・健康状態が良い層の区の典型。生活保護率は原因というより「独居・低所得・持病・かかりつけ医を持ちにくい」の代理指標で、因果ではなく相関として読む。</div></div>
+  <p><a class="mapgo" href="#" data-state="m=percap&w=南">南区を地図で</a> <a class="mapgo" href="#" data-state="m=percap&w=瀬谷">瀬谷区を地図で</a></p>
+  <h3>12. 搬送率はどう動いてきたか — 増えているのは高齢者の利用ではない</h3>
   <p>年代別の搬送率を2013年から追うと、年齢構成を固定した全体の伸びは年+1.45%で、「利用増が続く」シナリオの+1.5%とほぼ同じでした。ところが年代別に分けると、伸びているのは0–14歳（年+6.2%、2.6人→4.4人）と15–64歳（+1.6%）で、75–84歳はほぼ横ばい、85歳以上も+1.4%にとどまります。</p>
   <div class="callout b">「高齢者が救急車を使いすぎている」という説明は、横浜市のデータでは成り立ちません。高齢者の件数が増えているのは人数が増えているからで、1人あたりの利用はむしろ現役世代と子どもで増えています。</div>
   <p>子どもの伸びは、少子化で分母が減る一方、RSウイルスやインフルエンザの流行、小児の夜間救急の集約などが重なった可能性があります。2022年以降は65歳以上の伸びも加速（65–74歳で年+4.9%）しており、コロナ後にかかりつけ医から救急へ受診行動が移った可能性があります。「年代別トレンド」シナリオはこの年代別の伸びをそのまま延長したもので、2035年の市全体は<span class="num" id="insT35"></span>件で、「利用増が続く」（32.6万件）をやや上回ります。内訳は子ども・現役世代の寄与が大きく、85歳以上の寄与は「利用増が続く」より小さくなります。</p>
   <p><a class="mapgo" href="#" data-state="m=disp&s=T&y=2035">「年代別トレンド」シナリオを地図で</a></p>
-  <h3>12. 補足グラフ — 推移と構成を一覧で</h3>
+  <h3>13. 補足グラフ — 推移と構成を一覧で</h3>
   <p>ここまでの本文で触れなかった切り口を、同じデータからまとめて描きます。</p>
   <div class="card"><h4>市全体の人口の推移 2025→2040（年齢5区分、市推計・中位）</h4><svg class="chart" id="sgPop" viewBox="0 0 600 280"></svg><div class="lg"><span><b class="c-c"></b>0–14</span><span><b class="c-w"></b>15–64</span><span><b class="c-e1"></b>65–74</span><span><b class="c-e2"></b>75–84</span><span><b class="c-e3"></b>85+</span></div><div class="ins">総人口は377万→361万人と4%減るが、85歳以上（紫）は19万→27万人、65–74歳（橙）は40万→57万人に増える。減るのは15–64歳（239万→204万人、−15%）と0–14歳。2035年に団塊世代が全員85歳を超え、2040年に団塊ジュニアが65歳に入る、という2つの波がこの15年に重なる。</div></div>
   <div class="card"><h4>区別の出場件数の推移 2025→2040（人口変化のみ）</h4><svg class="chart" id="sgWardDisp" viewBox="0 0 600 420"></svg><div class="ins">18本の線はほぼ全て右上がりだが、傾きが違う。港北（2万→2.4万件）と鶴見・戸塚が上位を保ち、都筑・青葉は傾きが急。栄・瀬谷・旭は2035年以降ほぼ横ばいか減少に転じる。線が交差する箇所（例: 2033年に青葉が旭を抜く）が、配置の優先順位が入れ替わる時期。</div></div>
@@ -437,7 +441,7 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
   <div class="card"><h4>区別の出場件数の年齢構成（2024年、実績ベース校正）</h4><svg class="chart" id="sgAge" viewBox="0 0 600 470"></svg><div class="lg"><span><b class="c-c"></b>0–14</span><span><b class="c-w"></b>15–64</span><span><b class="c-e1"></b>65–74</span><span><b class="c-e2"></b>75–84</span><span><b class="c-e3"></b>85+</span></div><div class="ins">85歳以上（紫）の割合は旭・栄・泉・瀬谷で27〜29%、西・中・鶴見では15〜19%。15–64歳（青）は逆に西で5割、中で4割を超える。郊外では「高齢者の急病」、都心と北部では「現役世代の出場」が需要の中心で、同じ1件でも重症度と拘束時間が違う。年齢構成は市全体の搬送率を区の人口に掛けた推計値で、区別の年齢別実績ではない。</div></div>
   <div class="card"><h4>時間帯別の出場件数（市全体、2024年）</h4><svg class="chart" id="sgHour" viewBox="0 0 600 240"></svg><div class="ins">朝9〜10時台にピーク（1.5〜1.6万件/年）、深夜3〜4時台が底（4,800件）で3.3倍の差。昼65%・夜35%という本サイトの昼夜の分け方はこの分布から来ている。日勤救急隊（6隊、昼間のみ）は、このピークを平らにする配置。</div></div>
   <div class="card"><h4>1隊あたり年3,000件を超える年 — 区別・シナリオ別</h4><svg class="chart" id="sgOver" viewBox="0 0 600 490"></svg><div class="lg"><span><b style="background:#14213d"></b>人口変化のみ</span><span><b style="background:#f4a259"></b>緩やかな利用増</span><span><b style="background:#e63946"></b>利用増が続く</span><span><b style="background:#8e3b8f"></b>年代別トレンド</span></div><div class="ins">左端にある区はすでに超過。港北・都筑・鶴見はシナリオによって超える年が2026〜2034年と幅があり、ここが「利用増の抑制策が効くかどうか」で増隊時期が5年以上動く区。栄・泉・緑・西・金沢は人口変化のみなら2040年まで超えないが、利用増が続けば2029〜2037年に超える。</div></div>
-  <h3>13. 施策への示唆</h3>
+  <h3>14. 施策への示唆</h3>
   <ul>
     <li>北部（都筑・青葉・港北・鶴見）および都心（西・中）への救急隊増強・日勤隊の重点配置。市全体で+7.8%（約2.0万件）の増加は、1隊3,000件を維持するなら約7隊分に相当。</li>
     <li>85歳以上の搬送が増加分の中心（人数の増加による。1人あたりの利用は増えていない）。高齢者施設との事前連携（かかりつけ医・ACP・施設内看取り）と #7119 の活用で「搬送が本人の利益にならない出場」を減らす施策が最も費用対効果が高い。</li>
@@ -506,6 +510,8 @@ summary{font-size:13px;color:var(--sky);cursor:pointer;list-style:none;font-weig
     <li>総務省「住民基本台帳に基づく人口、人口動態及び世帯数」平成26年〜令和8年 — 各年1月1日の横浜市 年齢階級別人口（総計）。平成26年版は80歳以上が一括のため、翌年の構成比で按分。<a href="https://www.soumu.go.jp/main_sosiki/jichi_gyousei/daityo/jinkou_jinkoudoutai-setaisuu.html">ページ</a></li>
     <li>横浜市統計書「救急出場件数と搬送人員（昭和60年〜令和6年）」オープンデータ CSV。<a href="https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/opendata/kyukyu.html">ページ</a></li>
     <li>総務省「令和2年国勢調査 従業地・通学地集計」横浜市の概要 — 区別の昼間人口・流入・流出。<a href="https://www.city.yokohama.lg.jp/city-info/yokohamashi/tokei-chosa/portal/kekka/kokusei/r2/r2-04jutsu.files/1026-2020kokucho-jyu-tsu-gaiyou.pdf">PDF</a></li>
+    <li>横浜市健康福祉局「生活保護統計月報」（中区統計便覧2024 所収）— 区別の被保護世帯・人員・保護率（令和6年4月）。</li>
+    <li>総務省「住民基本台帳に基づく人口」【外国人住民】令和7年1月1日 — 区別の外国人住民数。</li>
     <li>国土地理院「全国都道府県市区町村別面積調」— 区の面積（令和6年）。<a href="https://www.gsi.go.jp/KOKUJYOHO/MENCHO-title.htm">ページ</a></li>
     <li>区界ポリゴン：国土数値情報（行政区域データ）を加工した niiyz/JapanCityGeoJson（簡略化）。</li>
   </ul>
@@ -907,6 +913,10 @@ function pairChart(id){const rk=[...W].map(w=>({n:w.name,p:(popTot(w,'2035')/pop
     g+=`<rect x="${Math.min(x0,x0+r.p*sc)}" y="${y+2}" width="${Math.abs(r.p*sc)}" height="9" fill="#1b998b" rx="2"/><rect x="${Math.min(x0,x0+r.d*sc)}" y="${y+12}" width="${Math.abs(r.d*sc)}" height="9" fill="#e63946" rx="2"/>`;
     g+=`<text x="${x0+(r.p<0?r.p*sc-4:r.p*sc+4)}" y="${y+10}" font-size="9.5" fill="#1b998b" text-anchor="${r.p<0?'end':'start'}" font-family="Manrope" font-weight="700">${pct(r.p,0)}</text><text x="${x0+r.d*sc+4}" y="${y+20}" font-size="9.5" fill="#e63946" font-family="Manrope" font-weight="700">${pct(r.d,0)}</text>`});
   document.getElementById(id).innerHTML=g}
+function placeLabels(pts,fs=11){const cw=fs*1.02,h=fs*1.4,placed=[],cand=(p)=>[[p.x+8,p.y+4,'start'],[p.x-8,p.y+4,'end'],[p.x,p.y-9,'middle'],[p.x,p.y+fs+6,'middle'],[p.x+8,p.y-4,'start'],[p.x+8,p.y+12,'start'],[p.x-8,p.y-4,'end'],[p.x-8,p.y+12,'end'],[p.x+14,p.y-14,'start'],[p.x+14,p.y+22,'start'],[p.x-14,p.y-14,'end'],[p.x-14,p.y+22,'end'],[p.x,p.y-22,'middle'],[p.x,p.y+fs+18,'middle']];
+  const box=(x,y,a,w)=>({x:a==='start'?x:a==='end'?x-w:x-w/2,y:y-fs*1.05,w,h}),hit=(a,b)=>a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h,area=(a,b)=>Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x))*Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
+  const dots=pts.map(p=>({x:p.x-7,y:p.y-7,w:14,h:14}));
+  pts.forEach((p,i)=>{const w=[...p.n].reduce((a,ch)=>a+(ch.charCodeAt(0)<256?0.6:1),0)*cw;let best=null,bs=1e9;for(const[x,y,a]of cand(p)){const b=box(x,y,a,w);let sc=0;placed.forEach(q=>sc+=area(b,q));dots.forEach((d,j)=>{if(j!==i)sc+=area(b,d)});if(sc<bs){bs=sc;best=[x,y,a,b]}if(sc===0)break}p.lx=best[0];p.ly=best[1];p.la=best[2];placed.push(best[3])});return pts}
 function spreadLabels(pts,minDy=12,nearX=70){const a=[...pts].sort((p,q)=>p.y-q.y);for(let i=0;i<a.length;i++){for(let j=0;j<i;j++){if(Math.abs(a[i].x-a[j].x)<nearX&&a[i].ly-a[j].ly<minDy&&a[i].ly>=a[j].ly-minDy){a[i].ly=a[j].ly+minDy}}}return pts}
 function scatterChart(id){const W2=[...W].map(w=>({n:w.name,x:w.disp24/w.area,y:w.arrive,r:w.area/unitsOf(w)}));
   const X=v=>60+(Math.log(v)-Math.log(300))/(Math.log(1800)-Math.log(300))*520,Y=v=>320-(v-5.8)/(10-5.8)*290;
@@ -1003,19 +1013,28 @@ function buildAnalysis(){
   {const X=v=>50+(v/400000)*530,Y=v=>340-(v/22000)*310;let g=`<g stroke="#e3e8ef">${[5000,10000,15000,20000].map(v=>`<line x1="50" x2="580" y1="${Y(v)}" y2="${Y(v)}"/>`).join('')}${[100000,200000,300000].map(v=>`<line x1="${X(v)}" x2="${X(v)}" y1="30" y2="340"/>`).join('')}</g>`;
    g+=[5000,10000,15000,20000].map(v=>`<text x="46" y="${Y(v)+4}" font-size="10.5" fill="#8e9bae" text-anchor="end">${v/10000}万</text>`).join('')+[100000,200000,300000].map(v=>`<text x="${X(v)}" y="356" font-size="10.5" fill="#8e9bae" text-anchor="middle">${v/10000}万人</text>`).join('');
    const pmax=Math.min(380000,22000/cpc*1000);g+=`<line x1="${X(0)}" y1="${Y(0)}" x2="${X(pmax)}" y2="${Y(pmax*cpc/1000)}" stroke="#8e9bae" stroke-dasharray="4 4"/><text x="${X(pmax)+4}" y="${Y(pmax*cpc/1000)+12}" font-size="10" fill="#8e9bae" text-anchor="end">市平均 ${cpc.toFixed(0)}件/千人</text>`;
-   const LB=R.map(r=>({r,x:X(r.pop),y:Y(r.d),ly:Y(r.d)}));spreadLabels(LB);LB.forEach(({r,x,y,ly})=>{const k=r.pc/cpc,c=k>=1.15?'#e63946':k<=0.85?'#1b998b':'#3a7bd5';g+=`<circle cx="${x}" cy="${y}" r="6" fill="${c}" opacity=".8"/><text x="${x+8}" y="${ly+4}" font-size="11" font-weight="700" fill="#14213d">${r.n}${k>=1.15||k<=0.85?' ×'+k.toFixed(2):''}</text>`});
+   const LB=R.map(r=>{const k=r.pc/cpc;return{r,k,n:r.n+(k>=1.15||k<=0.85?' ×'+k.toFixed(2):''),x:X(r.pop),y:Y(r.d)}});placeLabels(LB);LB.forEach(({r,k,n,x,y,lx,ly,la})=>{const c=k>=1.15?'#e63946':k<=0.85?'#1b998b':'#3a7bd5';g+=`<circle cx="${x}" cy="${y}" r="6" fill="${c}" opacity=".8"/><text x="${lx}" y="${ly}" text-anchor="${la}" font-size="11" font-weight="700" fill="#14213d">${n}</text>`});
    g+=`<text x="580" y="372" font-size="10.5" fill="#5b6b82" text-anchor="end">横軸＝人口（2025）、縦軸＝出場件数（2024）。赤＝比例線の1.15倍以上、緑＝0.85倍以下</text>`;document.getElementById('anB').innerHTML=g;document.getElementById('anBr').textContent=corr(R.map(r=>r.pop),R.map(r=>r.d)).toFixed(2)}
   // C: index bars
   {const rows=[...R].sort((a,b)=>b.dd/cdd-a.dd/cdd),rh=27,X=v=>80+Math.min(v,280)/280*500;let g=`<line x1="${X(100)}" x2="${X(100)}" y1="4" y2="${rows.length*rh+8}" stroke="#14213d" stroke-dasharray="3 3"/><text x="${X(100)}" y="${rows.length*rh+22}" font-size="10.5" fill="#14213d" text-anchor="middle">市平均＝100</text>`;
    [50,150,200,250].forEach(v=>g+=`<text x="${X(v)}" y="${rows.length*rh+22}" font-size="10" fill="#8e9bae" text-anchor="middle">${v}</text>`);
    rows.forEach((r,i)=>{const y=6+i*rh;g+=`<text x="74" y="${y+15}" font-size="12" font-weight="700" fill="#14213d" text-anchor="end">${r.n}</text>`;const tri=[[r.pd/cpd*100,'#8fd0c3'],[r.dd/cdd*100,'#3a7bd5'],[r.pc/cpc*100,'#e63946']];tri.forEach(([v,c],k)=>{g+=`<rect x="80" y="${y+k*7}" width="${X(v)-80}" height="6" fill="${c}" rx="1"/>`});const mx=Math.max(...tri.map(t=>t[0]));g+=`<text x="${Math.min(X(mx),520)+4}" y="${y+15}" font-size="9.5" font-family="Manrope" font-weight="700">${tri.map(([v,c])=>`<tspan fill="${c}">${v.toFixed(0)}</tspan>`).join('<tspan fill="#8e9bae"> · </tspan>')}</text>`});
    document.getElementById('anC').innerHTML=g;document.getElementById('anCr').textContent=corr(R.map(r=>r.pd),R.map(r=>r.dd)).toFixed(2);document.getElementById('anCr2').textContent=corr(R.map(r=>r.pd),R.map(r=>r.pc)).toFixed(2)}
+  // E: welfare rate vs calibration factor
+  {const X=v=>50+(Math.log(v)-Math.log(0.6))/(Math.log(6.5)-Math.log(0.6))*530,Y=v=>340-(v-0.8)/(1.7-0.8)*310,XT=[0.7,1,1.5,2,3,4,6];let g=`<g stroke="#e3e8ef">${[0.8,1.0,1.2,1.4,1.6].map(v=>`<line x1="50" x2="580" y1="${Y(v)}" y2="${Y(v)}"/>`).join('')}${XT.map(v=>`<line x1="${X(v)}" x2="${X(v)}" y1="30" y2="340"/>`).join('')}</g>`;
+   g+=[0.8,1.0,1.2,1.4,1.6].map(v=>`<text x="46" y="${Y(v)+4}" font-size="10.5" fill="#8e9bae" text-anchor="end">${v.toFixed(1)}</text>`).join('')+XT.map(v=>`<text x="${X(v)}" y="356" font-size="10.5" fill="#8e9bae" text-anchor="middle">${v}%</text>`).join('');
+   g+=`<line x1="50" x2="580" y1="${Y(1)}" y2="${Y(1)}" stroke="#8e9bae" stroke-dasharray="3 3"/><text x="54" y="${Y(1)-4}" font-size="10" fill="#8e9bae">期待どおり＝1.0</text>`;
+   const RE=W.map(w=>({n:w.name,x:w.hogo,y:w.fac,f:w.foreign/popTot(w,'2025')*100})),sub=RE.filter(r=>r.n!=='中'&&r.n!=='西'),[a,b]=fit(sub.map(r=>r.x),sub.map(r=>r.y));
+   g+=`<polyline fill="none" points="${[0.65,0.8,1,1.3,1.7,2.2,2.8,3.5,4.2].map(v=>X(v)+','+Y(a*v+b)).join(' ')}" stroke="#14213d" stroke-dasharray="5 4" stroke-width="1.5"/>`;
+   const LE=RE.map(r=>({r,n:r.n,x:X(r.x),y:Y(r.y)}));placeLabels(LE);LE.forEach(({r,x,y,lx,ly,la})=>{const core=r.n==='中'||r.n==='西';const far=Math.hypot(lx-x,ly-4-y)>12;g+=`<circle cx="${x}" cy="${y}" r="6" fill="${core?'#e63946':r.n==='南'?'#f4a259':'#3a7bd5'}" opacity=".85"/>${far?`<line x1="${x}" y1="${y}" x2="${lx+(la==='end'?-2:la==='start'?2:0)}" y2="${ly-4}" stroke="#b7c0cc" stroke-width="1"/>`:''}<text x="${lx}" y="${ly}" text-anchor="${la}" font-size="11" font-weight="700" fill="#14213d">${r.n}</text>`});
+   g+=`<text x="580" y="372" font-size="10.5" fill="#5b6b82" text-anchor="end">横軸＝生活保護率（対数目盛、R6.4）、縦軸＝校正係数。点線＝中・西を除く16区の回帰線</text>`;
+   document.getElementById('anE').innerHTML=g;document.getElementById('anEr').textContent=corr(RE.map(r=>r.x),RE.map(r=>r.y)).toFixed(2);document.getElementById('anEr2').textContent=corr(sub.map(r=>r.x),sub.map(r=>r.y)).toFixed(2);document.getElementById('anEr3').textContent=corr(RE.map(r=>r.f),RE.map(r=>r.y)).toFixed(2)}
   // D: aging vs percap
   {const X=v=>50+(v-17)/(34-17)*530,Y=v=>340-(v-40)/(130-40)*310;let g=`<g stroke="#e3e8ef">${[50,75,100,125].map(v=>`<line x1="50" x2="580" y1="${Y(v)}" y2="${Y(v)}"/>`).join('')}${[20,25,30].map(v=>`<line x1="${X(v)}" x2="${X(v)}" y1="30" y2="340"/>`).join('')}</g>`;
    g+=[50,75,100,125].map(v=>`<text x="46" y="${Y(v)+4}" font-size="10.5" fill="#8e9bae" text-anchor="end">${v}</text>`).join('')+[20,25,30].map(v=>`<text x="${X(v)}" y="356" font-size="10.5" fill="#8e9bae" text-anchor="middle">${v}%</text>`).join('');
    const sub=R.filter(r=>r.n!=='中'&&r.n!=='西'),[a,b]=fit(sub.map(r=>r.ag),sub.map(r=>r.pc));
    g+=`<line x1="${X(19)}" y1="${Y(a*19+b)}" x2="${X(32)}" y2="${Y(a*32+b)}" stroke="#14213d" stroke-dasharray="5 4" stroke-width="1.5"/>`;
-   const LD=R.map(r=>({r,x:X(r.ag),y:Y(r.pc),ly:Y(r.pc)}));spreadLabels(LD,12,40);LD.forEach(({r,x,y,ly})=>{const core=r.n==='中'||r.n==='西';g+=`<circle cx="${x}" cy="${y}" r="6" fill="${core?'#e63946':'#3a7bd5'}" opacity=".8"/><text x="${x+8}" y="${ly+4}" font-size="11" font-weight="700" fill="#14213d">${r.n}</text>`});
+   const LD=R.map(r=>({r,n:r.n,x:X(r.ag),y:Y(r.pc)}));placeLabels(LD);LD.forEach(({r,x,y,lx,ly,la})=>{const core=r.n==='中'||r.n==='西';g+=`<circle cx="${x}" cy="${y}" r="6" fill="${core?'#e63946':'#3a7bd5'}" opacity=".8"/><text x="${lx}" y="${ly}" text-anchor="${la}" font-size="11" font-weight="700" fill="#14213d">${r.n}</text>`});
    g+=`<text x="580" y="372" font-size="10.5" fill="#5b6b82" text-anchor="end">横軸＝高齢化率（2025）、縦軸＝出場件数/千人（2024）。点線＝中・西を除く16区の回帰線</text>`;document.getElementById('anD').innerHTML=g;
    document.getElementById('anDr').textContent=corr(R.map(r=>r.ag),R.map(r=>r.pc)).toFixed(2);document.getElementById('anDr2').textContent=corr(sub.map(r=>r.ag),sub.map(r=>r.pc)).toFixed(2);document.getElementById('anDslope').textContent=a.toFixed(1)}
 }
@@ -1039,7 +1058,9 @@ function wardMetrics(w){
    {k:'e3g',l:'85歳以上の増加 →2035',v:e3g,c:ce3g,f:v=>pct(v,0),ratio:false},
    {k:'dg',l:'出場の増減 →2035',v:(w.disp['2035']/w.disp24-1)*100,c:(A35/cityDisp-1)*100,f:v=>pct(v,1),ratio:false},
    {k:'transfer',l:'転院搬送の割合',v:share('転院搬送'),c:cshare('転院搬送'),f:v=>v.toFixed(1)+'%'},
-   {k:'dn',l:'昼夜間人口比',v:w.dn,c:cityDN,f:v=>v.toFixed(0)}]}
+   {k:'dn',l:'昼夜間人口比',v:w.dn,c:cityDN,f:v=>v.toFixed(0)},
+   {k:'hogo',l:'生活保護率',v:w.hogo,c:W.reduce((s,x)=>s+x.hogo*popTot(x,'2025'),0)/cityPop25,f:v=>v.toFixed(2)+'%'},
+   {k:'frn',l:'外国人住民の割合',v:w.foreign/pop*100,c:W.reduce((s,x)=>s+x.foreign,0)/cityPop25*100,f:v=>v.toFixed(1)+'%'}]}
 function rankOf(k,w,desc=true){const vals=W.map(x=>({n:x.name,v:wardMetrics(x).find(m=>m.k===k).v})).sort((a,b)=>desc?b.v-a.v:a.v-b.v);return vals.findIndex(x=>x.n===w.name)+1}
 function profHTML(ms){return `<div class="prof">${ms.map(m=>{let t;if(m.ratio===false){t=(m.v-m.c)/Math.max(1,Math.abs(m.c)*1.2)}else{t=Math.log(m.v/m.c)/Math.log(2.2)}t=Math.max(-1,Math.min(1,t));const w=Math.abs(t)*50,left=t>=0?50:50-w,col=t>=0?'#e63946':'#1b998b';return `<div class="pl">${m.l}</div><div class="pb"><i style="left:${left}%;width:${w}%;background:${col};opacity:.8"></i></div><div class="pv">${m.f(m.v)}<small>市 ${m.f(m.c)}</small></div>`}).join('')}</div>`}
 function wardText(w){
@@ -1050,6 +1071,7 @@ function wardText(w){
   if(fac>=1.12){const why=[];if(w.nonTr>DATA.cityNonTr+0.03)why.push(`不搬送率が市平均より${((w.nonTr-DATA.cityNonTr)*100).toFixed(0)}pt高い（辞退・軽症が多い）`);if(net>20000)why.push(`通勤・通学で${man(net)}人の流入超過`);if(g('transfer').v>g('transfer').c*1.3)why.push(`転院搬送が市平均の${(g('transfer').v/g('transfer').c).toFixed(1)}倍（病院立地）`);s1+=`人口と年齢構成から期待される件数の<b>${fac.toFixed(2)}倍</b>で、${why.length?why.join('、')+'が押し上げている。':'人口では説明できない需要が大きい。'}`}
   else if(fac<=0.9){s1+=`人口と年齢構成から期待される件数より<b>${((1-fac)*100).toFixed(0)}%少ない</b>。${w.dn<85?'昼間に人口が流出し、':''}若く健康な年齢構成で救急利用が少ない区。`}
   else s1+=`人口から期待される件数とほぼ一致（校正係数${fac.toFixed(2)}）。`;
+  const hr=rankOf('hogo',w);if(hr<=4)s1+=`生活保護率${w.hogo.toFixed(2)}%は18区中${hr}位で、年齢で説明できない需要の一因と考えられる。`;
   out.push(s1);
   // 2. 需要の質（事故種別）
   const keys=['急病','一般負傷','交通事故','転院搬送','加害','労働災害','運動競技','自損行為','火災'],cityDisp=cityTotal('2025');

@@ -94,6 +94,7 @@ for w, v in TYPE_WARD.items():
 # 不取扱（不搬送）理由 市全体（年報 p.108）
 NON_TRANSPORT = {'辞退': 40135, '死亡': 3816, '傷病者なし': 1566, '途中帰署': 2101, '虚誤報': 1223, '搬送後': 321, '中継': 8, 'その他': 506}
 assert sum(NON_TRANSPORT.values()) == 49676
+SOCIAL = json.load(open(HERE / 'social' / 'social_inputs.json'))  # 生活保護率(人員, %, R6.4) / 外国人住民(2025.1.1)
 def unit_stats(w):
     rows = [r for r in UNIT_ROWS if r[0] == w]
     d = sum(r[2] for r in rows); t = sum(r[3] for r in rows)
@@ -182,7 +183,7 @@ for w, disp24 in DISPATCH_WARD.items():
     wards.append({'name': w, 'code': bi['code'], 'pop': pop, 'disp': disp, 'byAge': by_age,
                   'disp24': disp24, 'transfer24': TRANSFER_WARD[w], 'fac': round(fac, 3),
                   'dn': bi['dn'], 'day20': bi['day20'], 'night20': bi['night20'], 'in': bi['in'], 'out': bi['out'],
-                  'dayExtra': round(day_extra_tr * DR * fac), 'units': UNITS_WARD[w][0], 'unitsDay': UNITS_WARD[w][1], 'area': AREA_WARD[w], 'types': dict(zip(TYPE_KEYS, TYPE_WARD[w])), **unit_stats(w)})
+                  'dayExtra': round(day_extra_tr * DR * fac), 'units': UNITS_WARD[w][0], 'unitsDay': UNITS_WARD[w][1], 'area': AREA_WARD[w], 'types': dict(zip(TYPE_KEYS, TYPE_WARD[w])), 'hogo': SOCIAL['hogo_rate_pct_R6_04'][w], 'foreign': SOCIAL['foreign_2025_0101'][w], **unit_stats(w)})
 
 city = {y: {g: sum(wd['pop'][y][g] for wd in wards) for g in GROUPS} for y in YEARS}
 for y in YEARS: city[y]['t'] = sum(city[y][g] for g in GROUPS)
