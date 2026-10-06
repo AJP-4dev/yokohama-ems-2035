@@ -6,3 +6,7 @@ src/*.xlsx
 video/node_modules/
 video/out/
 video/src/reference/
+src/**/*.pdf
+src/**/*.xlsx
+src/**/*.xls
+src/social/r2page.html
