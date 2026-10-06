@@ -22,6 +22,9 @@ Artifact版: https://claude.ai/artifact/Q5u7dTpGuNHD7BEVfKN5pa
 再生成: `.venv/bin/python src/build_model.py && .venv/bin/python src/build_html.py`
 （venv: `python3 -m venv .venv && .venv/bin/pip install openpyxl pymupdf pypdf`）
 
+## v7.1 動画v2（2026-10-06）
+- ユーザー指摘を反映した v2（6分54秒）に差し替え。結論カード廃止（scene.html CPAD=0）、区名「区」付き（lib.js wn()）、第1章の動く点削除、第2章の枠囲み削除、第3章の海側の線削除、第7章 3D→2D横棒トランジション、第8章38秒、第9章 縦線削除＋「2040年まで超えない」、第10章22秒・URL削除
+
 ## v7 動画タブ（2026-10-06）
 - 「動画」タブ（スライドの隣）: media/yokohama-ems-2035.mp4（7分14秒・1080p・無音・28MB）＋章リンク（クリックでその秒へ）。Artifact版でも再生できるよう src は GitHub Pages の絶対URL
 - 制作: video/（SPEC.md＝仕様、CONTRACT.md＝章ファイルの契約、src/scene.html＋lib.js＋chapters/ch00〜10.js、scripts/render.mjs で決定論レンダ）。再レンダ `cd video && node scripts/render.mjs`（約27分）。部分レンダ `--start F --end F`、静止画 `--frames`

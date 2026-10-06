@@ -126,17 +126,17 @@
     // 北部（16〜30.4）
     phase(lt, 16.2, 30.2, () => {
       wtext(lt, 16.3, null, '北部', LX, 240, { size: 48 });
-      wtext(lt, 16.6, null, '都筑と青葉は人口が減るのに\n出場は1割以上増える', LX, 330, { size: 28, lead: 44 });
+      wtext(lt, 16.6, null, '都筑区と青葉区は人口が減るのに\n出場は1割以上増える', LX, 330, { size: 28, lead: 44 });
     }, [0, 150, 790, 300]);
-    chip(lt, 17.2, 30.2, `${NORTH.join('、')}：出場 +${Math.round(dN[0])}〜${Math.round(dN[1])}%`, LX, 520, { c: COL.red });
-    chip(lt, 20.6, 30.2, `理由：85歳以上が${Math.floor(e3N[0] / 10)}〜${Math.round(e3N[1] / 10)}割増える（都筑、青葉）`, LX, 572, { c: COL.purple });
+    chip(lt, 17.2, 30.2, `${NORTH.map(wn).join('、')}：出場 +${Math.round(dN[0])}〜${Math.round(dN[1])}%`, LX, 520, { c: COL.red });
+    chip(lt, 20.6, 30.2, `理由：85歳以上が${Math.floor(e3N[0] / 10)}〜${Math.round(e3N[1] / 10)}割増える（${NORTH_PD.map(wn).join('、')}）`, LX, 572, { c: COL.purple });
     chip(lt, 24.2, 30.2, `西区は人口 ${sgn(wPopDiff35(NISHI))}%、出場 ${sgn(wDiff35(NISHI))}%`, LX, 624, { c: COL.navy });
     // 南西部（32〜44.2）
     phase(lt, 32.4, 44.2, () => {
       wtext(lt, 32.5, null, '南西部', LX, 240, { size: 48 });
       wtext(lt, 32.8, null, '人口は1割近く減るのに\n出場はほぼ減らない', LX, 330, { size: 28, lead: 44 });
     }, [0, 150, 790, 300]);
-    chip(lt, 33.4, 44.2, `${SW.join('、')}：人口 −${Math.round(pdS[0])}〜${Math.round(pdS[1])}%`, LX, 520, { c: COL.green });
+    chip(lt, 33.4, 44.2, `${SW.map(wn).join('、')}：人口 −${Math.round(pdS[0])}〜${Math.round(pdS[1])}%`, LX, 520, { c: COL.green });
     chip(lt, 35.8, 44.2, `それでも出場は横ばい（+${dsS[0].toFixed(1)}〜${dsS[1].toFixed(1)}%）`, LX, 572, { c: COL.red });
     chip(lt, 38.4, 44.2, '高齢化が人口減を打ち消す', LX, 624, { c: COL.purple });
   }

@@ -348,7 +348,9 @@ function phase(lt, a, b, fn, box = [0, 130, W, 800]) {
 const divCol = (v) => rampDiv(v, 15, -5);
 const fadeCol = (c, k) => mix(c, '#f1f3f6', k);
 const pctRange = (arr) => { const a = arr.map((v) => Math.abs(v)); return [Math.min(...a), Math.max(...a)]; };
+const wn = (w) => { const n = typeof w === 'string' ? w : w.name; return n.endsWith('区') ? n : n + '区'; };   // 区名は常に「◯◯区」
 function wardLabel3D(i, h, l1, l2, c2 = COL.ink, a = 1, left = false) {
+  if (typeof l1 === 'string' && l1.length <= 5 && WI[l1] !== undefined) l1 = l1 + '区';
   const [x, z] = C3[i]; const [sx, sy] = proj(x, h + 0.2, z);
   withAlpha(a, () => {
     line(sx, sy, sx, sy - 34, COL.navy, 1);

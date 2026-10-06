@@ -1,6 +1,6 @@
 /* 第7章 — 結果④ 密度と到着、不搬送。契約は ../../CONTRACT.md。IIFE で包み、トップレベルに名前を出さない。
  * (a) 1.4–15.6  散布図: 出場密度（件/km²、対数）× 到着時間。点が密度の低い順に現れ、右下がりの回帰線
- * (b) 16–33.6   3D: 柱が2段に割れる（上＝運んだ、下＝運ばなかった＝薄い色）→ 都心（中・西）を強調
+ * (b) 16–32.6   3D: 柱が2段に割れる（2.8s）→ ほどけて 2D の横積み上げ棒（不搬送率の高い順）→ 中区・西区・港北区を赤で強調
  * (c) 33.4–49.2 市全体の不搬送率の推移 2013→2024（2020–21年は網掛け） */
 (() => {
   const DENS = WD.map((w) => w.disp24 / w.area);                 // 出場密度（件/km²）
@@ -13,19 +13,28 @@
   const DECLINE = Math.floor(NT['辞退'] / NT_SUM * 10);            // 8（割）
   const pct0 = (v) => `${Math.round(v * 100)}%`;
   const h7 = (w) => 0.3 + (w.unitDisp / 23000) * 6;              // 区内の隊の出場件数 → 柱の高さ
-  const CORE = ['中', '西'];
   const CA = { theta: 0.45, phi: 1.12, dist: 30, tx: 0.5, tz: 1.0 };
-  const nc = meanC(CORE);
-  const CB = { theta: 0.62, phi: 0.98, dist: 27, tx: nc[0] - 2.5, tz: nc[1] - 2.0 };
+  // (a) 点の出方: 区ごと 0.05s の遅れ、18点が 1.2s 以内に出そろう
+  const P_T0 = 1.9, P_STEP = 0.05, P_D = 0.35, P_END = P_T0 + 17 * P_STEP + P_D;   // 3.1
+  // (b) 3D → 2D 横積み上げ棒
+  const PALE = ramp(RAMPS.disp, 0.2);                             // 薄い色＝運ばなかった
+  const HOT = ['中', '西', '港北'];                               // 赤で強調する区
+  const ORD_NT = WD.map((w, i) => i).sort((a, b) => WD[b].nonTr - WD[a].nonTr);   // 不搬送率の高い順
+  const B_T0 = 18.8, B_STEP = 0.03, B_D = 1.0;                    // ほどけ始め・行ごとの遅れ・移動時間（cubic-out）
+  const B3_END = B_T0 + 17 * B_STEP + B_D;                        // 3D を描くのはここまで（以降は 2D のみ）
+  const BX0 = 966, BH = 24, UMAX = Math.max(...WD.map((w) => w.unitDisp));
+  const BW = (v) => (v / UMAX) * 740;                             // 件数 → 棒の長さ
+  const rowY = (k) => 190 + k * 37;                               // 行の上端（18行: 190〜853）
   const NTY = (y) => nonTrYear(y) * 100;
+  const K_CITY = ORD_NT.findIndex((i) => WD[i].nonTr * 100 < NTY(2024));   // 市全体の不搬送率を下回る最初の行
 
   window.CHAPTERS[7] = {
     title: '結果④ 密度と到着、不搬送',
     q: '速さと「運ばない出場」は？',
     concl: '都心は速いが、運ばない出場が多い',
     duration: 50,
-    subs: [[1.6, 8.0, '件数が密な区ほど、早く着く'], [8.4, 15.4, '到着時間＝119番から現場に着くまで'], [16.6, 23.0, '下の段＝運ばなかった出場'], [23.4, 32.4, '運ばない出場は都心に集中'], [33.6, 40.6, '出場の5件に1件は、運ばない'], [41.0, 48.8, '2022年に跳ね上がり、高止まり']],
-    uses3D: (lt) => lt >= 16 && lt < 33.6,
+    subs: [[1.6, 8.0, '件数が密な区ほど、早く着く'], [8.4, 15.4, '到着時間＝119番から現場に着くまで'], [16.6, 23.0, '薄い色＝運ばなかった出場'], [23.4, 32.4, '運ばない出場は都心に集中'], [33.6, 40.6, '出場の5件に1件は、運ばない'], [41.0, 48.8, '2022年に跳ね上がり、高止まり']],
+    uses3D: (lt) => lt >= 16 && lt < B3_END,
     setup(ctx) {},
     draw(ctx, lt, t) {
       /* ── (a) 散布図 ───────────────────────────── */
@@ -36,104 +45,122 @@
         C.Y = (v) => lerp(C.y1, C.y0, (v - 6) / 4);
         axes(lt, 1.4, C, [[400, '400'], [600, '600'], [1000, '1,000'], [1500, '1,500件/km²']], [[6, '6分'], [7, '7分'], [8, '8分'], [9, '9分'], [10, '10分']]);
         wtext(lt, 1.8, null, '横：1km²あたりの出場件数（対数目盛）　縦：現場に着くまでの平均', C.x0, 190, { size: 20, c: COL.sub });
-        // 市平均の補助線（10.6〜）
-        const mu = E.outCubic(P(lt, 10.6, 0.9)), my = C.Y(DATA.cityArrive);
+        // 市平均の補助線（6.4〜）
+        const mu = E.outCubic(P(lt, 6.4, 0.9)), my = C.Y(DATA.cityArrive);
         if (mu > 0) line(C.x0, my, lerp(C.x0, C.x1, mu), my, COL.faint, 1.5, [6, 6]);
-        wtext(lt, 11.2, null, `市平均 ${DATA.cityArrive.toFixed(1)}分`, C.x1, my - 12, { size: 20, c: COL.sub, align: 'right' });
-        // 回帰線（右下がり）
-        const fu = E.outCubic(P(lt, 6.0, 1.2)), v0 = 370, v1 = 1650;
+        wtext(lt, 7.0, null, `市平均 ${DATA.cityArrive.toFixed(1)}分`, C.x1, my - 12, { size: 20, c: COL.sub, align: 'right' });
+        // 回帰線（右下がり）: 点が出そろった直後に走る
+        const fu = E.outCubic(P(lt, P_END, 1.2)), v0 = 370, v1 = 1650;
         if (fu > 0) {
           const ve = Math.exp(lerp(Math.log(v0), Math.log(v1), fu));
           line(C.X(v0), C.Y(FA + FB * Math.log(v0)), C.X(ve), C.Y(FA + FB * Math.log(ve)), COL.navy, 2, [10, 7]);
         }
-        // 点: 密度の低い順に伸びて現れる。13.4〜 中と保土ケ谷以外を薄く
-        const dim = E.inOut(P(lt, 13.2, 0.8));
+        // 点: 密度の低い順に、区ごと 0.05s ずつ遅れて伸びる（18点が 1.2s 以内に出そろう）。中区と保土ケ谷区以外を薄く
+        const dim = E.inOut(P(lt, 10.2, 0.8));
+        const red = E.inOut(P(lt, 4.6, 0.4));
         WD.forEach((w, i) => {
-          const u = E.outCubic(P(lt, 2.0 + rankD[i] * 0.2, 0.45));
+          const u = E.outCubic(P(lt, P_T0 + rankD[i] * P_STEP, P_D));
           if (u <= 0) return;
           const key = w.name === '中' || w.name === '保土ケ谷';
-          withAlpha(key ? 1 : 1 - 0.7 * dim, () => dot(C.X(DENS[i]), C.Y(ARR[i]), 9 * u, key && lt > 8.4 ? COL.red : COL.navy));
+          withAlpha(key ? 1 : 1 - 0.7 * dim, () => dot(C.X(DENS[i]), C.Y(ARR[i]), 9 * u, key ? mix(COL.navy, COL.red, red) : COL.navy));
         });
-        // ラベル（保土ケ谷・中・西）
-        [['保土ケ谷', 8.6, 18, -14], ['中', 8.9, 18, 8], ['西', 5.6, -18, -14]].forEach(([n, t0, dx, dy]) => {
+        // 最も遅い区と最も速い区を赤い点線で結ぶ（11.8〜）
+        const ku = E.outCubic(P(lt, 11.8, 1.2));
+        if (ku > 0) { const ia = WI['保土ケ谷'], ib = WI['中']; const xa = C.X(DENS[ia]), ya = C.Y(ARR[ia]), xb = C.X(DENS[ib]), yb = C.Y(ARR[ib]); line(xa, ya, lerp(xa, xb, ku), lerp(ya, yb, ku), COL.red, 1.5, [4, 5]); }
+        // ラベル（保土ケ谷区・中区・西区）
+        [['保土ケ谷', 4.8, 18, -14], ['中', 5.1, 18, 8], ['西', 3.6, -18, -14]].forEach(([n, t0, dx, dy]) => {
           const i = WI[n];
-          const s = `${n} ${ARR[i].toFixed(1)}分`;
+          const s = `${wn(n)} ${ARR[i].toFixed(1)}分`;
           withAlpha(n === '西' ? 1 - 0.7 * dim : 1, () => wtext(lt, t0, null, s, C.X(DENS[i]) + dx, C.Y(ARR[i]) + dy, { size: 20, c: COL.ink, align: dx < 0 ? 'right' : 'left' }));
         });
         wtext(lt, 1.6, null, '出場の密度と到着時間', LX, 240, { size: 48 });
         wtext(lt, 1.9, null, '横：1km²あたりの出場件数\n縦：119番から現場に着くまで', LX, 330, { size: 28, lead: 44 });
       }, [0, 140, W, 720]);
-      chip(lt, 6.4, 15.6, '密な区ほど速い', LX, 520, { c: COL.navy });
-      chip(lt, 8.6, 15.6, `保土ケ谷 ${ward('保土ケ谷').arrive.toFixed(1)}分／中 ${ward('中').arrive.toFixed(1)}分`, LX, 572, { c: COL.red });
-      chip(lt, 10.8, 15.6, `市平均 ${DATA.cityArrive.toFixed(1)}分・2.7km`, LX, 624, { c: COL.navy });
+      chip(lt, 3.6, 15.6, '密な区ほど速い', LX, 520, { c: COL.navy });
+      chip(lt, 4.8, 15.6, `保土ケ谷区 ${ward('保土ケ谷').arrive.toFixed(1)}分／中区 ${ward('中').arrive.toFixed(1)}分`, LX, 572, { c: COL.red });
+      chip(lt, 6.8, 15.6, `市平均 ${DATA.cityArrive.toFixed(1)}分・2.7km`, LX, 624, { c: COL.navy });
 
-      /* ── (b) 3D: 柱が2段に割れる ───────────────── */
-      if (lt >= 16 && lt < 33.6) {
-        reset3D(); beginGL();
-        const split = E.outCubic(P(lt, 18.4, 1.2));
-        const gap = 0.3 * split;
-        const em = E.inOut(P(lt, 23.4, 1.0));                        // 都心の強調
-        WD.forEach((w, i) => {
-          const h = h7(w) * E.outCubic(P(lt, 16.2 + rankN[i] * 0.06, 1.0));
-          if (h <= 0.002) return;
-          const hl = h * w.nonTr * split;
-          const core = CORE.includes(w.name);
-          const fk = core ? 0 : 0.72 * em;
-          const m = meshes[i], lo = lows[i];
-          setPillar(i, Math.max(0.002, h - hl), mix('#3a5f99', '#e9edf2', fk));
-          m.position.y = hl + gap;
-          m.userData.line.material.opacity = 0.3 * (1 - 0.6 * fk);
-          if (hl > 0.002) {
-            lo.visible = true; lo.scale.y = hl; lo.position.y = 0;
-            lo.material.opacity = 1; lo.material.depthWrite = true; lo.castShadow = true;
-            const pale = ramp(RAMPS.disp, 0.2);    // 薄い色＝運ばなかった
-            lo.material.color.set(core ? mix(pale, COL.red, em) : mix(pale, '#f1f3f6', fk));
-            lo.userData.line.material.opacity = (core ? 0.45 : 0.45 * (1 - 0.6 * fk));
-          }
-        });
-        // 割れると同時に、区どうしが少し離れる（重心を中心に縮める）→ 下の段が隣の区に隠れない
-        const sh = 1 - 0.1 * split;
-        const shrink = (m, i, k) => { m.scale.x = k; m.scale.z = k; m.position.x = C3[i][0] * (1 - k); m.position.z = C3[i][1] * (1 - k); };
-        WD.forEach((w, i) => { shrink(meshes[i], i, sh); shrink(lows[i], i, sh); });
-        const base = lerpCam(CA, CB, eio(lt, 23.4, 2.2));
-        const s = shiftCam({ ...base, theta: base.theta + 0.004 * (lt - 16) }, lerp(8, 5.2, eio(lt, 23.4, 2.2)));
-        setCam(s); renderView(0, W);
-        // reset3D は x/z を戻さないので、描いた直後に元へ（他の章に持ち越さない）
-        WD.forEach((w, i) => { shrink(meshes[i], i, 1); shrink(lows[i], i, 1); });
-        // 中区の手前の角に「運んだ／運ばなかった」の引き出し線（19.8〜）
-        const ni = WI['中'], nw = WD[ni];
-        let best = null;
-        nw.rings[0].forEach((p) => {
-          const [x, z] = px(p[0], p[1]);
-          const X = C3[ni][0] + (x - C3[ni][0]) * sh, Z = C3[ni][1] + (z - C3[ni][1]) * sh;
-          const q = proj(X, 0, Z);
-          if (!best || q[1] > best.q[1]) best = { X, Z, q };
-        });
-        const hN = h7(nw) * E.outCubic(P(lt, 16.2 + rankN[ni] * 0.06, 1.0)), hlN = hN * nw.nonTr * split;
-        const lead = (t0, yW, s, c) => {
-          const u = E.outCubic(P(lt, t0, 0.5)) * (1 - E.inOut(P(lt, 32.4, 0.35)));
-          if (u <= 0) return;
-          const [qx, qy] = proj(best.X, yW, best.Z);
-          line(qx + 6, qy, qx + 6 + 70 * u, qy, COL.navy, 1);
-          dot(qx + 6, qy, 3, COL.navy);
-          wtext(lt, t0 + 0.2, 32.4, s, qx + 84, qy + 7, { size: 20, c, halo: 5 });
-        };
-        if (split > 0.5) {
-          lead(19.8, hlN / 2, '運ばなかった', COL.ink);
-          lead(20.4, hlN + gap + (hN - hlN) / 2, '運んだ', COL.ink);
+      /* ── (b) 3D の2段の柱（16〜18.8）→ ほどけて 2D の横積み上げ棒（18.8〜32.6） ── */
+      if (lt >= 16 && lt < 33.4) {
+        const in3D = lt < B3_END;
+        const starts = [];                                           // 各区の柱の画面上の位置（ほどける前）
+        if (in3D) {
+          reset3D(); beginGL();
+          const split = E.outCubic(P(lt, 17.4, 1.0));
+          const gap = 0.3 * split;
+          const hs = [];
+          WD.forEach((w, i) => {
+            const h = h7(w) * E.outCubic(P(lt, 16.0 + rankN[i] * 0.04, 0.8));
+            hs[i] = h;
+            if (h <= 0.002) return;
+            const hl = h * w.nonTr * split;
+            const m = meshes[i], lo = lows[i];
+            setPillar(i, Math.max(0.002, h - hl), '#3a5f99');
+            m.position.y = hl + gap;
+            if (hl > 0.002) {
+              lo.visible = true; lo.scale.y = hl; lo.position.y = 0;
+              lo.material.opacity = 1; lo.material.depthWrite = true; lo.castShadow = true;
+              lo.material.color.set(PALE);
+              lo.userData.line.material.opacity = 0.45;
+            }
+          });
+          setCam(shiftCam({ ...CA, theta: CA.theta + 0.004 * (lt - 16) }, 8)); renderView(0, W);
+          WD.forEach((w, i) => {
+            const [x, z] = C3[i], h = hs[i] || 0.002, hl = h * w.nonTr * split;
+            const b = proj(x, 0, z), m = proj(x, hl, z), tp = proj(x, h + gap, z);
+            starts[i] = { x: b[0], yB: b[1], yM: m[1], yT: tp[1] };
+          });
+          // 3D を背景色で覆っていく（棒がほどけるのと同時に）
+          const fa = E.inOut(P(lt, B_T0, 0.7));
+          if (fa > 0) withAlpha(fa, () => { g.fillStyle = COL.bg; g.fillRect(0, 0, W, H); });
         }
-        // ラベル
-        [['中', 24.6], ['西', 25.0], ['泉', 26.6]].forEach(([n, t0]) => {
-          const i = WI[n], w = WD[i];
-          const a = E.outCubic(P(lt, t0, 0.5));
-          if (a > 0) wardLabel3D(i, h7(w) + 0.24, n, pct0(w.nonTr), CORE.includes(n) ? COL.red : COL.ink, a, n === '西');
+        // 2D の横積み上げ棒（不搬送率の高い順）
+        const em = E.inOut(P(lt, 21.0, 0.8));                       // 中区・西区・港北区を赤で強調
+        wtext(lt, 19.8, 32.4, '区内の隊の出場件数', BX0, 168, { size: 20, c: COL.sub });
+        wtext(lt, 20.2, 32.4, '不搬送率', RX1, 168, { size: 20, c: COL.sub, align: 'right' });
+        ORD_NT.forEach((i, k) => {
+          const w = WD[i], u = E.outCubic(P(lt, B_T0 + k * B_STEP, B_D));
+          if (u <= 0 && !in3D) return;
+          const hot = HOT.includes(w.name), e = hot ? em : 0;
+          const ry = rowY(k), lT = BW(w.unitDisp * (1 - w.nonTr)), lN = BW(w.unitDisp * w.nonTr);
+          const navy = mix('#3a5f99', COL.navy, u), pale = mix(PALE, COL.red, e);
+          if (u < 1) {
+            if (!starts[i] || u <= 0) return;                         // ほどける前は 3D の柱がそのまま見えている
+            // 縦の柱（上＝運んだ、下＝運ばなかった）→ 横の棒（左＝運んだ、右＝運ばなかった）
+            const s = starts[i], wv = 16;
+            const rT = [s.x - wv / 2, s.yT, wv, s.yM - s.yT], rN = [s.x - wv / 2, s.yM, wv, s.yB - s.yM];
+            const eT = [BX0, ry, lT, BH], eN = [BX0 + lT, ry, lN, BH];
+            // 動き: 位置は cubic-out で行へ、高さは前半で棒の太さに、長さは後半に伸びる
+            const pr = P(lt, B_T0 + k * B_STEP, B_D);
+            const uh = E.outCubic(clamp(pr / 0.5)), uw = E.outCubic(clamp((pr - 0.25) / 0.75));
+            const ax = lerp(rT[0], eT[0], u), aw = lerp(rT[2], eT[2], uw);
+            const a = [ax, lerp(rT[1], eT[1], u), aw, lerp(rT[3], eT[3], uh)];
+            const b = [lerp(rN[0], ax + aw, u), lerp(rN[1], eN[1], u), lerp(rN[2], eN[2], uw), lerp(rN[3], eN[3], uh)];
+            g.fillStyle = navy; g.fillRect(a[0], a[1], a[2], Math.max(1, a[3]));
+            g.fillStyle = pale; g.fillRect(b[0], b[1], b[2], Math.max(1, b[3]));
+          } else {
+            g.fillStyle = navy; g.fillRect(BX0, ry, lT, BH);
+            g.fillStyle = pale; g.fillRect(BX0 + lT, ry, lN, BH);
+          }
+          const tc = hot ? mix(COL.ink, COL.red, e) : COL.ink;
+          wtext(lt, B_T0 + 0.5 + k * B_STEP, 32.4, wn(w), BX0 - 14, ry + BH / 2 + 7, { size: 20, c: tc, align: 'right' });
+          wtext(lt, B_T0 + 0.8 + k * B_STEP, 32.4, pct0(w.nonTr), RX1, ry + BH / 2 + 7, { size: 20, tab: true, c: hot ? mix(COL.sub, COL.red, e) : COL.sub, align: 'right' });
         });
-        // 左カラム（3D の上に白地なしで置く）
+        // 市全体の不搬送率の位置に点線（27.0〜）: ここより上の区は市全体より高い
+        if (!in3D) {
+          const yS = rowY(K_CITY) - 6.5, su = E.outCubic(P(lt, 27.0, 1.0)) * (1 - E.inOut(P(lt, 32.4, 0.35)));
+          if (su > 0) line(BX0 - 120, yS, lerp(BX0 - 120, RX1, su), yS, COL.sub, 1.5, [6, 6]);
+          wtext(lt, 27.4, 32.4, `市全体 ${NTY(2024).toFixed(1)}%`, RX1 - 70, yS - 8, { size: 20, c: COL.sub, align: 'right', halo: 5 });
+          // 上位3区の赤い括弧（29.4〜）
+          const bu = E.outCubic(P(lt, 29.4, 0.8)) * (1 - E.inOut(P(lt, 32.4, 0.35)));
+          if (bu > 0) { const xb = BX0 - 112, y0 = rowY(0), y1 = rowY(2) + BH; line(xb, y0, xb, lerp(y0, y1, bu), COL.red, 2); line(xb, y0, xb + 8, y0, COL.red, 2); if (bu > 0.98) line(xb, y1, xb + 8, y1, COL.red, 2); }
+        }
+        // 左カラム
         wtext(lt, 16.4, 32.4, '運ばない出場', LX, 240, { size: 48 });
-        wtext(lt, 16.7, 32.4, '柱＝区内の隊の出場件数\n上の段＝運んだ\n下の段（薄い色）＝運ばなかった', LX, 330, { size: 28, lead: 44 });
-        chip(lt, 19.6, 32.4, '不搬送＝出場したが運ばなかった', LX, 520, { c: COL.grey });
-        chip(lt, 24.6, 32.4, `中 ${pct0(ward('中').nonTr)}、西 ${pct0(ward('西').nonTr)}、泉 ${pct0(ward('泉').nonTr)}`, LX, 572, { c: COL.red });
-        chip(lt, 27.6, 32.4, `理由の${DECLINE}割は本人の辞退`, LX, 624, { c: COL.navy });
+        wtext(lt, 16.7, 32.4, '区内の隊の出場件数を2つに分ける\n紺＝運んだ\n薄い色＝運ばなかった', LX, 330, { size: 28, lead: 44 });
+        chip(lt, 19.4, 32.4, '不搬送＝出場したが運ばなかった', LX, 520, { c: COL.grey });
+        chip(lt, 21.4, 32.4, `${wn('中')} ${pct0(ward('中').nonTr)}、${wn('西')} ${pct0(ward('西').nonTr)}、${wn('泉')} ${pct0(ward('泉').nonTr)}`, LX, 572, { c: COL.red });
+        chip(lt, 25.0, 32.4, `理由の${DECLINE}割は本人の辞退`, LX, 624, { c: COL.navy });
       }
 
       /* ── (c) 不搬送率の推移 ───────────────────── */
@@ -184,7 +211,7 @@
         wtext(lt, 34.0, null, `${NTY(2024).toFixed(1)}%`, LX, 380, { size: 120, tab: true, c: COL.red });
         wtext(lt, 34.6, null, '2024年。出場のおよそ5件に1件', LX, 450, { size: 28 });
         wtext(lt, 36.0, null, `2013年は ${NTY(2013).toFixed(1)}%`, LX, 520, { size: 28, c: COL.sub });
-        chip(lt, 38.4, 49.2, '不搬送＝出場したが運ばなかった', LX, 590, { c: COL.grey });
+        chip(lt, 38.4, 51, '不搬送＝出場したが運ばなかった', LX, 590, { c: COL.grey });
       }
     },
   };

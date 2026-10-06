@@ -80,7 +80,7 @@
         wtext(lt, EX + 0.1, null, '例：都筑区の2035年', LX, 330, { size: 48 });
         wtext(lt, EX + 0.5, null, '1から5を順に掛けると、\n2035年の出場件数になる', LX, 410, { size: 28, lead: 44 });
       }, LBOX);
-      chip(lt, 60.2, 63.0, `2024年より ${sgn(wDiff35(TZ))}%`, LX, 540, { c: COL.red });
+      chip(lt, 60.2, 64.0, `2024年より ${sgn(wDiff35(TZ))}%`, LX, 540, { c: COL.red });
 
       /* ── 右: ステップ1・2 区×年齢の積み上げ棒（2025→2040） ── */
       phase(lt, 1.4, 19.6, () => {
@@ -98,7 +98,7 @@
           if (gu <= 0) return;
           const al = w === TZ ? 1 : 1 - 0.6 * hi;
           withAlpha(al, () => {
-            text(w.name, bx - 14, y + 21, { size: 20, w: w === TZ && hi > 0.5 ? 800 : 600, c: COL.sub, align: 'right' });
+            text(wn(w), bx - 14, y + 21, { size: 20, w: w === TZ && hi > 0.5 ? 800 : 600, c: COL.sub, align: 'right' });
             const p = popAt(w, yv); let x = bx;
             AGE.forEach((a) => { const ww = p[a] * sc * gu; g.fillStyle = AGEC[a]; g.fillRect(x, y + 4, Math.max(0, ww - 1), row - 10); x += ww; });
           });
@@ -153,7 +153,9 @@
         const xf = mapXf(box), mu = E.outCubic(P(lt, 32.2, 0.9));
         wipe(mu, box.x - 40, box.y - 20, box.w + 80, box.h + 40, () => drawMap(box, (w) => (w === NISHI ? COL.orange : '#e3e8ef')));
         const [nx0, ny0] = wardC(xf, NISHI);
-        NEAR_NISHI.forEach((i, k) => {
+        // 海側（画面の東〜南東）から来る矢印は出さない。陸側の区からの流れだけ
+        const LAND = NEAR_NISHI.filter((i) => { const [cx, cy] = wardC(xf, WD[i]), a = Math.atan2(cy - ny0, cx - nx0) * 180 / Math.PI; return !(a > -25 && a < 80); });
+        LAND.forEach((i, k) => {
           const [cx, cy] = wardC(xf, WD[i]);
           // 隣の区の方向から、長さを揃えて流れ込む（隣接区は重心が近く矢印が短すぎるため）
           const dl = Math.hypot(cx - nx0, cy - ny0), L = Math.max(dl, 190);
@@ -166,7 +168,7 @@
           g.save(); g.setLineDash([3, 12]); g.lineDashOffset = -lt * 36; g.beginPath(); g.moveTo(sx, sy); g.lineTo(ex, ey); g.strokeStyle = '#ffffff'; g.lineWidth = 2.5; g.stroke(); g.restore();
           dot(sx, sy, 4, COL.navy);
         });
-        wtext(lt, 32.8, null, '西', nx0, ny0 + 10, { size: 28, w: 800, align: 'center', halo: 6 });
+        wtext(lt, 32.8, null, wn(NISHI), nx0, ny0 + 10, { size: 28, w: 800, align: 'center', halo: 6 });
       }, RBOX);
 
       /* ── 右: ステップ5 計算（灰）と実績（赤）の2本棒 → 倍率 ── */

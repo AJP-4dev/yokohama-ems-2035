@@ -39,16 +39,6 @@
       const u = E.outCubic(P(lt, 1.4, 2.2));
       polyline(popPts, u, COL.navy, 4);
       polyline(dspPts, u, COL.red, 4);
-      // 静止を避ける: 線の上を小さな点が年をなぞる（4〜10.6s）、重なった後は2035年の差を示す破線がゆっくり伸び縮みせず、点がにじむ（14〜17.8s）
-      if (lt >= 4 && lt < 10.6) {
-        const v = Math.min(1, Math.max(0, (lt - 4) / 6.2));
-        const ip = Math.min(popPts.length - 1, Math.round(v * (popPts.length - 1))), id = Math.min(dspPts.length - 1, Math.round(v * (dspPts.length - 1)));
-        dot(popPts[ip][0], popPts[ip][1], 7, COL.navy); dot(dspPts[id][0], dspPts[id][1], 7, COL.red);
-      }
-      if (lt >= 14.2) {
-        const v = ((lt - 14.2) % 1.8) / 1.8, d35 = dspPts[11];
-        withAlpha(0.5 * (1 - v), () => { g.strokeStyle = COL.red; g.lineWidth = 2; g.beginPath(); g.arc(d35[0], d35[1], 8 + 22 * v, 0, Math.PI * 2); g.stroke(); });
-      }
       if (m > 0) {
         const pe = popPts[popPts.length - 1], de = dspPts[dspPts.length - 1];
         wtext(lt, 13.2, null, '人口', pe[0] + 14, pe[1] + 8, { size: 20, c: COL.navy });

@@ -20,9 +20,9 @@ import * as THREE_NS from '../vendor/three.module.js';
 window.THREE = THREE_NS;
 
 // 確定タイムライン（秒）。章ファイルの duration と一致していること
-const BASE = [8, 19, 28, 64, 46, 45, 66, 50, 42, 20, 30];
+const BASE = [8, 19, 28, 64, 46, 45, 66, 50, 38, 20, 22];
 // 問いカード・結論カードを読む「一拍」: 第1章以降は前後に QPAD/CPAD 秒を足す（章ファイルの lt はそのまま）
-const QPAD = 0.8, CPAD = 0.8;
+const QPAD = 0.8, CPAD = 0;   // 結論カードは廃止（依頼主の指示: テンポが悪くなる）
 const TL = BASE.map((d, i) => (i >= 1 ? d + QPAD + CPAD : d));
 window.CHAPTERS = [];
 const load = (src) => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('load ' + src)); document.body.appendChild(s); });
@@ -75,6 +75,7 @@ function drawQCard(ci, lt) {
 // 結論カード（末尾0.8s）: 白地に紺の1文を左揃え、下に細い罫線が伸びる
 function drawConcl(ci, lt) {
   const c = CHAPTERS[ci];
+  return;   // 結論カードは廃止
   if (!c.concl || lt < TL[ci] - 0.8 - CPAD) return;
   const l = lt - (TL[ci] - 0.8 - CPAD);
   clipRect(0, 0, W * E.outCubic(P(l, 0, 0.18)), H, () => { g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H); });

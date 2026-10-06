@@ -1,5 +1,5 @@
 /* 第2章 データの出どころ — 契約は ../../CONTRACT.md。IIFE で包み、トップレベルに名前を出さない。
- * 見せる動き: 5枚の資料カードが「罫線が一周して」着地する。残りは強調の切替と、線が走って計算へ集まるだけ。 */
+ * 見せる動き: 5枚の資料カードが「罫線が一周して」着地する。残りは強調の切替と、線が走って計算へ集まるだけ。終盤は保持＋点の輪のみ。 */
 (() => {
   // 資料カード [資料名, 使い道, 意味色]（色: 紺=人口、赤=出場件数、橙=昼）
   const SRC = [
@@ -19,6 +19,9 @@
     [[8.8, 14.8]],
     [[9.6, 14.8]],
   ];
+  // 左の説明に合わせた控えめな強調: 該当カードの左端の縦線（意味色）が 4px→10px に太る
+  const EMPH = [[[9.8, 14.4]], [[11.0, 14.4]], [[15.2, 19.8]], [[16.6, 19.8]], [[18.0, 19.8]]];
+  const emph = (k, lt) => Math.max(0, ...EMPH[k].map(([a, b]) => E.outCubic(P(lt, a, 0.4)) * (1 - E.outCubic(P(lt, b - 0.4, 0.4)))));
   const alphaOf = (k, lt) => 1 - 0.58 * Math.max(0, ...DIM[k].map(([a, b]) => win(lt, a, b, 0.4)));
   // 矩形の罫線が左上から時計回りに走る
   const boxRun = (u, x, y, w, h, c, lw) => polyline([[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]], u, c, lw);
@@ -63,17 +66,13 @@
           wipe(fu, CX, y, CW, CH, () => { g.fillStyle = COL.paper; g.fillRect(CX, y, CW, CH); });
           boxRun(E.outCubic(P(lt, t0, 0.9)), CX, y, CW, CH, COL.navy, 1);
           const bu = E.outCubic(P(lt, t0 + 0.2, 0.4));
-          if (bu > 0) { g.fillStyle = c; g.fillRect(CX, y + CH * (1 - bu), 4, CH * bu); }
+          if (bu > 0) { const bw = 4 + 6 * emph(k, lt); g.fillStyle = c; g.fillRect(CX, y + CH * (1 - bu), bw, CH * bu); }
           wtext(lt, t0 + 0.25, null, String(k + 1).padStart(2, '0'), CX + 28, y + 52, { size: 20, tab: true, c: COL.sub });
           wtext(lt, t0 + 0.3, null, t1, CX + 80, y + 52, { size: 28, w: 800 });
           wtext(lt, t0 + 0.55, null, t2, CX + 80, y + 90, { size: 20, c: COL.sub });
         });
       });
 
-      /* ── 左の説明と同じ時刻に、対応するカードを強調の罫線が一周する ── */
-      [[9.8, 0, 14.4], [11.0, 1, 14.4], [15.2, 2, 19.8], [16.6, 3, 19.8], [18.0, 4, 19.8]].forEach(([a, k, b]) => {
-        if (lt >= a && lt < b) boxRun(E.outCubic(P(lt, a, 0.8)), CX - 6, CY(k) - 6, CW + 12, CH + 12, COL.navy, 2);
-      });
 
       /* ── 20.6〜: 5本の線が右へ走り、1点に集まる（計算の材料になる） ── */
       SRC.forEach(([, , c], k) => {
@@ -87,10 +86,10 @@
       if (nu > 0) { line(BUS, NODE[1], lerp(BUS, NODE[0], nu), NODE[1], COL.navy, 1.5); if (nu > 0.95) dot(NODE[0], NODE[1], 7, COL.navy); }
       wtext(lt, 22.2, null, '区ごとの\n計算へ', NODE[0] + 18, NODE[1] - 4, { size: 20, lead: 30 });
 
-      /* ── 23〜27: 強調の罫線がカードを順に一周する（静止を避ける小さな動き） ── */
-      if (lt >= 23 && lt < 27) {
-        const k = Math.floor((lt - 23) / 0.8), u = E.outCubic(clamp((lt - 23 - k * 0.8) / 0.6));
-        boxRun(u, CX - 6, CY(k) - 6, CW + 12, CH + 12, COL.navy, 2);
+      /* ── 22.6〜: 全体を静かに保持。微かな動きは1つだけ＝集まった点から細い輪がゆっくり広がる ── */
+      if (lt >= 22.6) {
+        const v = ((lt - 22.6) % 2.2) / 2.2;
+        withAlpha(0.45 * (1 - v), () => { g.strokeStyle = COL.navy; g.lineWidth = 1.5; g.beginPath(); g.arc(NODE[0], NODE[1], 9 + 16 * v, 0, Math.PI * 2); g.stroke(); });
       }
     },
   };
