@@ -111,7 +111,7 @@ A5 = list(TRANSPORT_5Y)                     # 21 階級ラベル
 G_OF = {a: ('c' if i < 3 else 'w' if i < 13 else 'e1' if i < 15 else 'e2' if i < 17 else 'e3') for i, a in enumerate(A5)}
 GROUPS = ['c', 'w', 'e1', 'e2', 'e3']
 GROUP4 = {'c': 'c', 'w': 'w', 'e1': 'e1', 'e2': 'e2', 'e3': 'e2'}   # 実績4区分へのマップ（e2+e3=75+）
-YEARS = list(range(2025, 2041))
+YEARS = list(range(2025, 2071))
 
 # projection.json は5区分集計なので、5歳階級はxlsxから再読込
 import openpyxl
